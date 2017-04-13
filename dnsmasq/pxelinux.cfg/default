@@ -1,0 +1,11 @@
+default coreos
+prompt 1
+timeout 15
+
+display boot.msg
+
+label coreos
+  menu default
+  kernel coreos_production_pxe.vmlinuz
+  initrd coreos_production_pxe_image.cpio.gz
+  append coreos.config.url=https://gist.githubusercontent.com/george-angel/6480ab55f6eb4471a709c226f66e950a/raw/6e91406f0e1aa89e668ddea90a15d321de174350/pxe-config.ign sshkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5OOYqgvQMxnDnSQtMNNLl9JtIx1cdVXoiQ3+GXP0oZ gangel@uw"
