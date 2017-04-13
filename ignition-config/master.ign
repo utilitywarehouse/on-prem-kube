@@ -1,0 +1,26 @@
+{
+  "ignition": {
+    "version": "2.0.0",
+    "config": {}
+  },
+  "storage": {},
+  "systemd": {
+    "units": [
+      {
+        "name": "etcd2.service",
+        "enable": true
+      }
+    ]
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5OOYqgvQMxnDnSQtMNNLl9JtIx1cdVXoiQ3+GXP0oZ gangel@uw"
+        ]
+      }
+    ]
+  }
+}
