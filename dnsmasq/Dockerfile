@@ -25,6 +25,9 @@ RUN apk --no-cache add dnsmasq curl tar gpgme \
  && mv coreos_production_pxe_image.cpio.gz /var/lib/tftpboot/coreos_production_pxe_image.cpio.gz \
  # Set permissions for dnsmasq
  && chown -R dnsmasq:dnsmasq /var/lib/tftpboot/ \
- && chmod -R a+r /var/lib/tftpboot/
+ && chmod -R a+r /var/lib/tftpboot/ \
+ # Clean up
+ && apk del curl tar gpgme \
+ && rm -r syslinux-${SYSLINUX_VERSION}* CoreOS_Image_Signing_Key.asc
 
 ENTRYPOINT ["/usr/sbin/dnsmasq"]
