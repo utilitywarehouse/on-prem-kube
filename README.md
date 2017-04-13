@@ -1,3 +1,11 @@
+Following assumes setup:
+
+```
+client01 \
+client02 - switch - (enp0s25):laptop:(wlp3s0) ~ network with internet
+client03 /
+```
+
 Make sure packet forwarding is enabled, likely will be if you run docker locally
 
 ```
