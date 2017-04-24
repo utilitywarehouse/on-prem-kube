@@ -12,7 +12,7 @@ Make sure packet forwarding is enabled, likely will be if you run docker locally
 sysctl -a | grep forward
 ```
 
-Set up masquerade rules to nat traffic between wlp3s0 (wifi with internet) and enp0s25 (local network with pxe clients)
+Set up masquerade rules to nat traffic between `wlp3s0` (wifi with internet) and `enp0s25` (local network with pxe clients)
 
 ```
 sudo iptables -t nat -A POSTROUTING -o wlp3s0 -j MASQUERADE
