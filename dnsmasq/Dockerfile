@@ -2,10 +2,8 @@ FROM alpine:3.5
 
 ENV SYSLINUX_VERSION="6.03"
 
-COPY dnsmasq.conf /etc/dnsmasq.conf
-COPY pxelinux.cfg /var/lib/tftpboot/pxelinux.cfg
-
 RUN apk --no-cache add dnsmasq curl tar gpgme \
+ && mkdir -p /var/lib/tftpboot/ \
  # Get syslinux files
  && curl -s -O https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-${SYSLINUX_VERSION}.tar.gz \
  && tar xzf syslinux-${SYSLINUX_VERSION}.tar.gz \
@@ -29,5 +27,8 @@ RUN apk --no-cache add dnsmasq curl tar gpgme \
  # Clean up
  && apk del curl tar gpgme \
  && rm -r syslinux-${SYSLINUX_VERSION}* CoreOS_Image_Signing_Key.asc
+
+COPY dnsmasq.conf /etc/dnsmasq.conf
+COPY pxelinux.cfg /var/lib/tftpboot/pxelinux.cfg
 
 ENTRYPOINT ["/usr/sbin/dnsmasq"]
