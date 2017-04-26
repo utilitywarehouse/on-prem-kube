@@ -262,22 +262,20 @@ storage:
 
 etcd:
   version: 3.1.6
-  #etcd_image_url: "quay.io/coreos/hyperkube"
-  #etcd_image_tag: "v1.6.2_coreos.0"
-  #etcd_name: "member0"
-  #etcd_initial_cluster: "member0=https://192.168.1.100:2380"
-  #etcd_listen_peer_urls: "https://192.168.1.100:2380"
-  #etcd_listen_client_urls: "https://0.0.0.0:2379"
-  #etcd_advertise_client_urls: "https://192.168.1.100:2379"
-  #etcd_initial_advertise_peer_urls: "https://192.168.1.100:2380"
-  ##etcd_client_cert_auth: "true"
-  ##etcd_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
-  ##etcd_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
-  ##etcd_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
-  #etcd_peer_client_cert_auth: "true"
-  #etcd_peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
-  #etcd_peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
-  #etcd_peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+  name: "member0"
+  initial_cluster: "member0=https://192.168.1.100:2380"
+  listen_peer_urls: "https://192.168.1.100:2380"
+  listen_client_urls: "https://0.0.0.0:2379"
+  advertise_client_urls: "https://192.168.1.100:2379"
+  initial_advertise_peer_urls: "https://192.168.1.100:2380"
+  #client_cert_auth: "true"
+  #trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+  #cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+  #key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+  peer_client_cert_auth: true
+  peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+  peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+  peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
 
 flannel:
   interface: $private_ipv4
