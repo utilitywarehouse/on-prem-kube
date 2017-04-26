@@ -1,0 +1,440 @@
+storage:
+  disks:
+  - device: /dev/sda
+    wipe_table: true
+    partitions:
+    - label: root
+      number: 0 # Next available
+      size: 0   # All space
+  filesystems:
+  - name: root
+    mount: 
+      device: /dev/sda
+      format: ext4
+    path: / #/var/lib/etcd 
+  files:
+  - filesystem: root
+    path: /home/core/etcdctl-wrapper
+    mode: 0755
+    user:
+      id: 500
+    group:
+      id: 500
+    contents:
+      inline:  |
+        #!/bin/sh
+        ETCDCTL_API="$${ETCDCTL_API:-3}"
+        export ETCDCTL_API
+          /home/core/etcdctl \
+            --cacert /etc/etcd/ssl/ca.pem \
+            --cert /etc/etcd/ssl/k8s-etcd.pem \
+            --key /etc/etcd/ssl/k8s-etcd-key.pem \
+            --endpoints ${private-ipv4}:2379 \
+            "$@"
+  - filesystem: root
+    path: /etc/kubernetes/manifests/kube-apiserver.yaml
+    contents:
+      inline: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-apiserver
+          namespace: kube-system
+        spec:
+          hostNetwork: true
+          containers:
+          - name: kube-apiserver
+            image: ${hyperkube_image_repo}:${k8s_ver}
+            command:
+            - /hyperkube
+            - apiserver
+            - --bind-address=0.0.0.0
+            - --etcd-servers=${etcd_address}
+            - --etcd-cafile=/etc/kubernetes/ssl/ca.pem
+            - --etcd-certfile=/etc/kubernetes/ssl/k8s-apiserver.pem
+            - --etcd-keyfile=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --allow-privileged=true
+            - --service-cluster-ip-range=${service_ip_range}
+            - --secure-port=443
+            - --advertise-address=$private_ipv4
+            - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+            - --tls-cert-file=/etc/kubernetes/ssl/k8s-apiserver.pem
+            - --tls-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --client-ca-file=/etc/kubernetes/ssl/ca.pem
+            - --service-account-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --service-account-lookup=true
+            - --runtime-config=extensions/v1beta1=true,extensions/v1beta1/deployments=true,extensions/v1beta1/daemonsets=true,extensions/v1beta1/networkpolicies=true,extensions/v1beta1/thirdpartyresources=true,rbac.authorization.k8s.io/v1beta1=true,batch/v2alpha1=true
+            - --cloud-provider=aws
+            - --oidc-issuer-url=https://accounts.google.com
+            - --oidc-username-claim=email
+            - --oidc-client-id=524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com
+            - --authorization-rbac-super-user=k8s-admin
+            - --authorization-mode=RBAC
+            - --apiserver-count=${master_instance_count}
+            - --audit-log-path=/dev/stdout
+            - --storage-backend=etcd3
+            - --storage-media-type=application/json
+            - --v=0
+            livenessProbe:
+              httpGet:
+                host: 127.0.0.1
+                port: 8080
+                path: /healthz
+              initialDelaySeconds: 15
+              timeoutSeconds: 15
+            ports:
+            - containerPort: 443
+              hostPort: 443
+              name: https
+            - containerPort: 8080
+              hostPort: 8080
+              name: local
+            volumeMounts:
+            - mountPath: /etc/kubernetes/ssl
+              name: ssl-certs-kubernetes
+              readOnly: true
+            - mountPath: /etc/ssl/certs
+              name: ssl-certs-host
+              readOnly: true
+          volumes:
+          - hostPath:
+              path: /etc/kubernetes/ssl
+            name: ssl-certs-kubernetes
+          - hostPath:
+              path: /usr/share/ca-certificates
+            name: ssl-certs-host
+
+  - filesystem: root
+    path: /etc/kubernetes/manifests/kube-proxy.yaml
+    contents:
+      inline: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-proxy
+          namespace: kube-system
+        spec:
+          hostNetwork: true
+          containers:
+          - name: kube-proxy
+            image: ${hyperkube_image_repo}:${k8s_ver}
+            command:
+            - /hyperkube
+            - proxy
+            - --master=http://127.0.0.1:8080
+            - --proxy-mode=iptables
+            - --v=0
+            securityContext:
+              privileged: true
+            volumeMounts:
+            - mountPath: /etc/ssl/certs
+              name: ssl-certs-host
+              readOnly: true
+          volumes:
+          - hostPath:
+              path: /usr/share/ca-certificates
+            name: ssl-certs-host
+  - filesystem: root
+    path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    contents:
+      inline: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-controller-manager
+          namespace: kube-system
+        spec:
+          containers:
+          - name: kube-controller-manager
+            image: ${hyperkube_image_repo}:${k8s_ver}
+            command:
+            - /hyperkube
+            - controller-manager
+            - --master=http://127.0.0.1:8080
+            - --leader-elect=true
+            - --service-account-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --root-ca-file=/etc/kubernetes/ssl/ca.pem
+            - --cloud-provider=aws
+            - --configure-cloud-routes=false
+            - --allocate-node-cidrs=true
+            - --cluster-cidr=${pod_network}
+            - --v=0
+            resources:
+              requests:
+                cpu: 200m
+            livenessProbe:
+              httpGet:
+                host: 127.0.0.1
+                path: /healthz
+                port: 10252
+              initialDelaySeconds: 15
+              timeoutSeconds: 15
+            volumeMounts:
+            - mountPath: /etc/kubernetes/ssl
+              name: ssl-certs-kubernetes
+              readOnly: true
+            - mountPath: /etc/ssl/certs
+              name: ssl-certs-host
+              readOnly: true
+          hostNetwork: true
+          volumes:
+          - hostPath:
+              path: /etc/kubernetes/ssl
+            name: ssl-certs-kubernetes
+          - hostPath:
+              path: /usr/share/ca-certificates
+            name: ssl-certs-host
+  - filesystem: root
+    path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    contents:
+      inline: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-scheduler
+          namespace: kube-system
+        spec:
+          hostNetwork: true
+          containers:
+          - name: kube-scheduler
+            image: ${hyperkube_image_repo}:${k8s_ver}
+            command:
+            - /hyperkube
+            - scheduler
+            - --master=http://127.0.0.1:8080
+            - --leader-elect=true
+            - --v=0
+            resources:
+              requests:
+                cpu: 100m
+            livenessProbe:
+              httpGet:
+                host: 127.0.0.1
+                path: /healthz
+                port: 10251
+              initialDelaySeconds: 15
+              timeoutSeconds: 15
+  - filesystem: root
+    path: /opt/bin/install-kube-system
+    contents:
+      inline: |
+        #!/bin/bash -e
+        /usr/bin/curl -H "Content-Type: application/json" -XPOST -d @"/srv/kubernetes/manifests/kube-system.json" "http://127.0.0.1:8080/api/v1/namespaces"
+  - filesystem: root
+    path: /srv/kubernetes/manifests/kube-system.json
+    contents:
+      inline: |
+        {
+          "apiVersion": "v1",
+          "kind": "Namespace",
+          "metadata": {
+            "name": "kube-system"
+          }
+        }
+  - filesystem: root
+    path: /srv/kubernetes/manifests/network-policy.json
+    contents:
+      inline: |
+        {
+          "kind": "ThirdPartyResource",
+          "apiVersion": "extensions/v1beta1",
+          "metadata": {
+            "name": "network-policy.net.alpha.kubernetes.io"
+          },
+          "description": "Specification for a network isolation policy",
+          "versions": [
+            {
+              "name": "v1alpha1"
+            }
+          ]
+        }
+  - filesystem: root
+    path: /var/lib/kubelet/kubeconfig
+    contents:
+      inline: |
+        kind: Config
+        clusters:
+        - name: local
+          cluster:
+            certificate-authority: /etc/kubernetes/ssl/ca.pem
+            server: http://127.0.0.1:8080
+        users:
+        - name: kubelet
+          user:
+            client-certificate: /etc/kubernetes/ssl/k8s-apiserver.pem
+            client-key: /etc/kubernetes/ssl/k8s-apiserver-key.pem
+        contexts:
+        - context:
+            cluster: local
+            user: kubelet
+          name: kubelet-cluster.local
+        current-context: kubelet-cluster.local
+  - filesystem: root
+    path: /etc/prom-text-collectors/machine_role.prom
+    contents:
+      inline: |
+        machine_role{role="master"} 1
+
+etcd:
+  version: 3.1.6
+    etcd_image_url: "${etcd_image_repo}"
+    etcd_image_tag: "${etcd_ver}"
+    etcd_name: "member${count}"
+    etcd_initial_cluster: "${etcd-initial-cluster}"
+    etcd_listen_peer_urls: "https://${private-ipv4}:2380"
+    etcd_listen_client_urls: "https://0.0.0.0:2379"
+    etcd_advertise-client_urls: "https://${private-ipv4}:2379"
+    etcd_initial_advertise_peer_urls: "https://${private-ipv4}:2380"
+    #etcd_client_cert_auth: "true"
+    #etcd_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+    #etcd_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+    #etcd_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+    etcd_peer_client_cert_auth: "true"
+    etcd_peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+    etcd_peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+    etcd_peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+
+flannel:
+  interface: $private_ipv4
+  etcd_endpoints: ${etcd_address}
+  etcd_cafile: /etc/kubernetes/ssl/ca.pem
+  etcd_certfile: /etc/kubernetes/ssl/k8s-apiserver.pem
+  etcd_keyfile: /etc/kubernetes/ssl/k8s-apiserver-key.pem
+
+systemd:
+  units:
+  - name: etcd-member.service
+    enable: true
+    dropins:
+    - name: 10-wait-etcd.conf
+      contents: |
+        [Unit]
+        After=var-lib-etcd.mount get-ssl.service
+        Requires=var-lib-etcd.mount get-ssl.service
+    - name: 20-custom-options.conf
+      contents: |
+        Environment="RKT_RUN_ARGS=\
+          --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \
+          --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \
+          --mount volume=etc-etcd,target=/etc/etcd"
+        ExecStartPre=/usr/bin/mkdir -p /etc/etcd
+  - name: docker.service
+    enable: true
+    drop-ins:
+      - name: 40-flannel.conf
+        contents: |
+          [Unit]
+          Requires=flanneld.service
+          After=flanneld.service
+  - name: flanneld.service
+    enable: true
+    drop-ins:
+      - name: 10-etcd.conf
+        content: |
+          [Unit]
+          Requires=get-ssl.service
+          After=get-ssl.service
+          [Service]
+          Environment="ETCD_SSL_DIR=/etc/kubernetes/ssl"
+          ExecStartPre=/usr/bin/curl \
+              --silent -X PUT \
+              --cacert $${FLANNELD_ETCD_CAFILE} \
+              --cert $${FLANNELD_ETCD_CERTFILE} \
+              --key $${FLANNELD_ETCD_KEYFILE} \
+              -d "value={\"Network\" : \"${pod_network}\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
+              $${FLANNELD_ETCD_ENDPOINTS}/v2/keys/coreos.com/network/config?prevExist=false
+  - name: kubelet.service
+    enable: true
+    contents: |
+      [Unit]
+      Requires=docker.service
+      After=docker.service
+      [Service]
+      Environment=KUBELET_IMAGE_URL=${hyperkube_image_repo}
+      Environment=KUBELET_IMAGE_TAG=${k8s_ver}
+      Environment="RKT_RUN_ARGS=\
+        --uuid-file-save=/var/run/kubelet-pod.uuid \
+        --volume var-log,kind=host,source=/var/log \
+        --mount volume=var-log,target=/var/log \
+        --volume cni-bin,kind=host,source=/opt/cni/bin \
+        --mount volume=cni-bin,target=/opt/cni/bin \
+        --volume var-lib-cni,kind=host,source=/var/lib/cni \
+        --mount volume=var-lib-cni,target=/var/lib/cni \
+        --volume dns,kind=host,source=/etc/resolv.conf \
+        --mount volume=dns,target=/etc/resolv.conf"
+      ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+      ExecStartPre=/usr/bin/mkdir -p /var/log/containers
+      ExecStartPre=/usr/bin/mkdir -p /opt/cni/bin
+      ExecStartPre=/usr/bin/mkdir -p /var/lib/cni
+      ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
+      ExecStart=/usr/lib/coreos/kubelet-wrapper \
+        --require-kubeconfig=true \
+        --kubeconfig=/var/lib/kubelet/kubeconfig \
+        --node-labels=role=master \
+        --register-node=true \
+        --register-schedulable=false \
+        --container-runtime=docker \
+        --network-plugin-dir=/etc/kubernetes/cni/net.d \
+        --network-plugin=${network_plugin} \
+        --cni-bin-dir=/opt/cni/bin \
+        --cni-conf-dir=/etc/kubernetes/cni/net.d \
+        --allow-privileged=true \
+        --pod-manifest-path=/etc/kubernetes/manifests \
+        --cluster-dns=${dns_service_ip} \
+        --cluster-domain=cluster.local
+      ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
+      Restart=always
+      RestartSec=10
+      [Install]
+      WantedBy=multi-user.target
+  - name: install-kube-system.service
+    enable: true
+    contents: |
+      [Unit]
+      Requires=kubelet.service docker.service
+      After=kubelet.service docker.service
+
+      [Service]
+      Type=simple
+      StartLimitInterval=0
+      Restart=on-failure
+      RestartSec=10
+      ExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version
+      ExecStart=/opt/bin/install-kube-system
+  - name: s3-iam-get.service
+    enable: true
+    contents: |
+       [Unit]
+       After=network-online.target
+       Description=Install s3-iam-get
+       Requires=network-online.target
+       [Service]
+       ExecStartPre=-/usr/bin/mkdir -p /opt/bin
+       ExecStart=/usr/bin/curl -L -o /opt/bin/s3-iam-get \
+         https://raw.githubusercontent.com/kz8s/s3-iam-get/master/s3-iam-get
+       ExecStart=/usr/bin/chmod +x /opt/bin/s3-iam-get
+       RemainAfterExit=yes
+       Type=oneshot 
+  - name: get-ssl.service
+    enable: true
+    contents: |
+      [Unit]
+      Description=Get ssl artifacts from s3 bucket using IAM role
+      Requires=s3-iam-get.service
+      After=s3-iam-get.service
+      [Service]
+      ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
+      ExecStart=/bin/sh -c "/opt/bin/s3-iam-get ${ssl_tar} | tar xv -C /etc/etcd/ssl/"
+      RemainAfterExit=yes
+      Type=oneshot
+  - name: get-etcdctl.service
+    enable: true 
+    contents: |
+      [Unit]
+      After=network-online.target
+      Description=Get etcdctl binary from Github
+      Requires=network-online.target
+      [Service]
+      ExecStart=/bin/sh -c "curl -sL https://github.com/coreos/etcd/releases/download/${etcd_ver}/etcd-${etcd_ver}-linux-amd64.tar.gz | tar zxv --strip=1 -C /home/core etcd-${etcd_ver}-linux-amd64/etcdctl && chown core:core /home/core/etcdctl"
+      RemainAfterExit=yes
+      Type=oneshot
