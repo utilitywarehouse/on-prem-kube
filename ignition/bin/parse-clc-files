@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -x
+
+for f in clc/*.yaml; do 
+        out_filename=`basename $f .yaml`
+	ct -pretty -in-file $f -out-file ic/$out_filename.ign
+done
+

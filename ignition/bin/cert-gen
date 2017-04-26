@@ -44,7 +44,7 @@ generate k8s-apiserver client-server "10.3.0.1,kubernetes,kubernetes.default,kub
 generate k8s-worker client "*.worker.$NAME_SUFFIX"
 
 # etcd
-generate k8s-etcd client-server "etcd.$NAME_SUFFIX,*.etcd.$NAME_SUFFIX,$ETCD_ADDRESSES"
+generate k8s-etcd client-server "192.168.1.100,etcd.$NAME_SUFFIX,*.etcd.$NAME_SUFFIX,$ETCD_ADDRESSES"
 
 ## Clean up
 rm ca-config.json

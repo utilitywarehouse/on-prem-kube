@@ -14,24 +14,6 @@ storage:
     path: / #/var/lib/etcd 
   files:
   - filesystem: root
-    path: /home/core/etcdctl-wrapper
-    mode: 0755
-    user:
-      id: 500
-    group:
-      id: 500
-    contents:
-      inline:  |
-        #!/bin/sh
-        ETCDCTL_API="$${ETCDCTL_API:-3}"
-        export ETCDCTL_API
-          /home/core/etcdctl \
-            --cacert /etc/etcd/ssl/ca.pem \
-            --cert /etc/etcd/ssl/k8s-etcd.pem \
-            --key /etc/etcd/ssl/k8s-etcd-key.pem \
-            --endpoints ${private-ipv4}:2379 \
-            "$@"
-  - filesystem: root
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
     contents:
       inline: |
@@ -44,17 +26,17 @@ storage:
           hostNetwork: true
           containers:
           - name: kube-apiserver
-            image: ${hyperkube_image_repo}:${k8s_ver}
+            image: quay.io/coreos/hyperkube:v1.6.2_coreos.0
             command:
             - /hyperkube
             - apiserver
             - --bind-address=0.0.0.0
-            - --etcd-servers=${etcd_address}
+            - --etcd-servers=https://192.168.1.100:2379
             - --etcd-cafile=/etc/kubernetes/ssl/ca.pem
             - --etcd-certfile=/etc/kubernetes/ssl/k8s-apiserver.pem
             - --etcd-keyfile=/etc/kubernetes/ssl/k8s-apiserver-key.pem
             - --allow-privileged=true
-            - --service-cluster-ip-range=${service_ip_range}
+            - --service-cluster-ip-range=10.3.0.0/24
             - --secure-port=443
             - --advertise-address=$private_ipv4
             - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
@@ -70,7 +52,7 @@ storage:
             - --oidc-client-id=524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com
             - --authorization-rbac-super-user=k8s-admin
             - --authorization-mode=RBAC
-            - --apiserver-count=${master_instance_count}
+            - --apiserver-count=1
             - --audit-log-path=/dev/stdout
             - --storage-backend=etcd3
             - --storage-media-type=application/json
@@ -117,7 +99,7 @@ storage:
           hostNetwork: true
           containers:
           - name: kube-proxy
-            image: ${hyperkube_image_repo}:${k8s_ver}
+            image: quay.io/coreos/hyperkube:v1.6.2_coreos.0
             command:
             - /hyperkube
             - proxy
@@ -146,7 +128,7 @@ storage:
         spec:
           containers:
           - name: kube-controller-manager
-            image: ${hyperkube_image_repo}:${k8s_ver}
+            image: quay.io/coreos/hyperkube:v1.6.2_coreos.0
             command:
             - /hyperkube
             - controller-manager
@@ -157,7 +139,7 @@ storage:
             - --cloud-provider=aws
             - --configure-cloud-routes=false
             - --allocate-node-cidrs=true
-            - --cluster-cidr=${pod_network}
+            - --cluster-cidr=10.2.0.0/16
             - --v=0
             resources:
               requests:
@@ -197,7 +179,7 @@ storage:
           hostNetwork: true
           containers:
           - name: kube-scheduler
-            image: ${hyperkube_image_repo}:${k8s_ver}
+            image: quay.io/coreos/hyperkube:v1.6.2_coreos.0
             command:
             - /hyperkube
             - scheduler
@@ -277,14 +259,14 @@ storage:
 
 etcd:
   version: 3.1.6
-    etcd_image_url: "${etcd_image_repo}"
-    etcd_image_tag: "${etcd_ver}"
-    etcd_name: "member${count}"
-    etcd_initial_cluster: "${etcd-initial-cluster}"
-    etcd_listen_peer_urls: "https://${private-ipv4}:2380"
+    etcd_image_url: "quay.io/coreos/hyperkube"
+    etcd_image_tag: "v1.6.2_coreos.0"
+    etcd_name: "member0"
+    etcd_initial_cluster: "member0=https://192.168.1.100:2380"
+    etcd_listen_peer_urls: "https://192.168.1.100:2380"
     etcd_listen_client_urls: "https://0.0.0.0:2379"
-    etcd_advertise-client_urls: "https://${private-ipv4}:2379"
-    etcd_initial_advertise_peer_urls: "https://${private-ipv4}:2380"
+    etcd_advertise-client_urls: "https://192.168.1.100:2379"
+    etcd_initial_advertise_peer_urls: "https://192.168.1.100:2380"
     #etcd_client_cert_auth: "true"
     #etcd_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
     #etcd_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
@@ -296,7 +278,7 @@ etcd:
 
 flannel:
   interface: $private_ipv4
-  etcd_endpoints: ${etcd_address}
+  etcd_endpoints: https://192.168.1.100:2379
   etcd_cafile: /etc/kubernetes/ssl/ca.pem
   etcd_certfile: /etc/kubernetes/ssl/k8s-apiserver.pem
   etcd_keyfile: /etc/kubernetes/ssl/k8s-apiserver-key.pem
@@ -341,7 +323,7 @@ systemd:
               --cacert $${FLANNELD_ETCD_CAFILE} \
               --cert $${FLANNELD_ETCD_CERTFILE} \
               --key $${FLANNELD_ETCD_KEYFILE} \
-              -d "value={\"Network\" : \"${pod_network}\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
+              -d "value={\"Network\" : \"10.2.0.0/16\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
               $${FLANNELD_ETCD_ENDPOINTS}/v2/keys/coreos.com/network/config?prevExist=false
   - name: kubelet.service
     enable: true
@@ -350,8 +332,8 @@ systemd:
       Requires=docker.service
       After=docker.service
       [Service]
-      Environment=KUBELET_IMAGE_URL=${hyperkube_image_repo}
-      Environment=KUBELET_IMAGE_TAG=${k8s_ver}
+      Environment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
+      Environment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0
       Environment="RKT_RUN_ARGS=\
         --uuid-file-save=/var/run/kubelet-pod.uuid \
         --volume var-log,kind=host,source=/var/log \
@@ -375,12 +357,12 @@ systemd:
         --register-schedulable=false \
         --container-runtime=docker \
         --network-plugin-dir=/etc/kubernetes/cni/net.d \
-        --network-plugin=${network_plugin} \
+        --network-plugin=cni \
         --cni-bin-dir=/opt/cni/bin \
         --cni-conf-dir=/etc/kubernetes/cni/net.d \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
-        --cluster-dns=${dns_service_ip} \
+        --cluster-dns=10.3.0.10 \
         --cluster-domain=cluster.local
       ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
       Restart=always
@@ -401,40 +383,13 @@ systemd:
       RestartSec=10
       ExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version
       ExecStart=/opt/bin/install-kube-system
-  - name: s3-iam-get.service
-    enable: true
-    contents: |
-       [Unit]
-       After=network-online.target
-       Description=Install s3-iam-get
-       Requires=network-online.target
-       [Service]
-       ExecStartPre=-/usr/bin/mkdir -p /opt/bin
-       ExecStart=/usr/bin/curl -L -o /opt/bin/s3-iam-get \
-         https://raw.githubusercontent.com/kz8s/s3-iam-get/master/s3-iam-get
-       ExecStart=/usr/bin/chmod +x /opt/bin/s3-iam-get
-       RemainAfterExit=yes
-       Type=oneshot 
   - name: get-ssl.service
     enable: true
     contents: |
       [Unit]
       Description=Get ssl artifacts from s3 bucket using IAM role
-      Requires=s3-iam-get.service
-      After=s3-iam-get.service
       [Service]
       ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
-      ExecStart=/bin/sh -c "/opt/bin/s3-iam-get ${ssl_tar} | tar xv -C /etc/etcd/ssl/"
-      RemainAfterExit=yes
-      Type=oneshot
-  - name: get-etcdctl.service
-    enable: true 
-    contents: |
-      [Unit]
-      After=network-online.target
-      Description=Get etcdctl binary from Github
-      Requires=network-online.target
-      [Service]
-      ExecStart=/bin/sh -c "curl -sL https://github.com/coreos/etcd/releases/download/${etcd_ver}/etcd-${etcd_ver}-linux-amd64.tar.gz | tar zxv --strip=1 -C /home/core etcd-${etcd_ver}-linux-amd64/etcdctl && chown core:core /home/core/etcdctl"
+      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/etcd/ssl/"
       RemainAfterExit=yes
       Type=oneshot
