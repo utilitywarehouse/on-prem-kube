@@ -403,7 +403,7 @@ systemd:
       [Service]
       ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
       ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
-      ExecStartPre=ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
+      ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/etcd/ssl/"
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/"
       RemainAfterExit=yes

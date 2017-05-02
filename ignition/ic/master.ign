@@ -192,7 +192,7 @@
       {
         "name": "get-ssl.service",
         "enable": true,
-        "contents": "[Unit]\nDescription=Get ssl artifacts from s3 bucket using IAM role\nAfter=network.target\n[Service]\nExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl\nExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl\nExecStartPre=ExecStartPre=/bin/sh -c \"until curl -sL http://192.168.1.1:8000; do sleep 2; done\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/etcd/ssl/\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/\"\nRemainAfterExit=yes\nType=oneshot\n"
+        "contents": "[Unit]\nDescription=Get ssl artifacts from s3 bucket using IAM role\nAfter=network.target\n[Service]\nExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl\nExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl\nExecStartPre=/bin/sh -c \"until curl -sL http://192.168.1.1:8000; do sleep 2; done\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/etcd/ssl/\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/\"\nRemainAfterExit=yes\nType=oneshot\n"
       }
     ]
   },
