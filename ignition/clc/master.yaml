@@ -1,20 +1,11 @@
 storage:
-  disks:
-  - device: /dev/sda
-    wipe_table: true
-    partitions:
-    - label: ROOT
-      number: 0 # Next available
-      size: 0   # All space
   filesystems:
-  - name: root
+  - name: var
     mount: 
-      device: /dev/sda1
+      device: /dev/sda
       format: ext4
       create:
         force: true
-        options:
-        - "-LROOT"
   files:
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
@@ -88,7 +79,6 @@ storage:
           - hostPath:
               path: /usr/share/ca-certificates
             name: ssl-certs-host
-
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-proxy.yaml
     contents:
@@ -286,6 +276,26 @@ flannel:
 
 systemd:
   units:
+  - name: var.mount
+    enable: true
+    contents: |
+      [Unit]
+      Description=Mount ephemeral to /var
+      Requires=format-ephemeral.service
+      After=format-ephemeral.service
+      [Mount]
+      What=/dev/sda
+      Where=/var
+      Type=ext4
+      [Install]
+      WantedBy=multi-user.target
+  - name: docker.service
+    dropins:
+      - name: 10-wait-docker.conf
+        contents: |
+          [Unit]
+          After=var.mount
+          Requires=var.mount
   - name: etcd-member.service
     enable: true
     dropins:

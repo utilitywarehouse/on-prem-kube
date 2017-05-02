@@ -4,31 +4,14 @@
     "config": {}
   },
   "storage": {
-    "disks": [
-      {
-        "device": "/dev/sda",
-        "wipeTable": true,
-        "partitions": [
-          {
-            "label": "ROOT",
-            "number": 0,
-            "size": 0,
-            "start": 0
-          }
-        ]
-      }
-    ],
     "filesystems": [
       {
-        "name": "root",
+        "name": "var",
         "mount": {
-          "device": "/dev/sda1",
+          "device": "/dev/sda",
           "format": "ext4",
           "create": {
-            "force": true,
-            "options": [
-              "-LROOT"
-            ]
+            "force": true
           }
         }
       }
@@ -145,6 +128,20 @@
           {
             "name": "20-clct-flannel.conf",
             "contents": "[Service]\nEnvironment=\"FLANNEL_IMAGE_TAG=v\u003cnil\u003e\"\nExecStart=\nExecStart=/usr/lib/coreos/flannel-wrapper $FLANNEL_OPTS \\\n  --etcd-endpoints=\"https://192.168.1.100:2379\" \\\n  --etcd-cafile=\"/etc/kubernetes/ssl/ca.pem\" \\\n  --etcd-certfile=\"/etc/kubernetes/ssl/k8s-apiserver.pem\" \\\n  --etcd-keyfile=\"/etc/kubernetes/ssl/k8s-apiserver-key.pem\" \\\n  --iface=\"$private_ipv4\""
+          }
+        ]
+      },
+      {
+        "name": "var.mount",
+        "enable": true,
+        "contents": "[Unit]\nDescription=Mount ephemeral to /var\nRequires=format-ephemeral.service\nAfter=format-ephemeral.service\n[Mount]\nWhat=/dev/sda\nWhere=/var\nType=ext4\n[Install]\nWantedBy=multi-user.target\n"
+      },
+      {
+        "name": "docker.service",
+        "dropins": [
+          {
+            "name": "10-wait-docker.conf",
+            "contents": "[Unit]\nAfter=var.mount\nRequires=var.mount\n"
           }
         ]
       },
