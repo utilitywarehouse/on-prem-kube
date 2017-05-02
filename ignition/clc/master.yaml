@@ -399,6 +399,7 @@ systemd:
     contents: |
       [Unit]
       Description=Get ssl artifacts from s3 bucket using IAM role
+      After=network.target
       [Service]
       ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
       ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
