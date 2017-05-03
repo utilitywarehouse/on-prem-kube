@@ -32,7 +32,7 @@ storage:
             - --allow-privileged=true
             - --service-cluster-ip-range=10.3.0.0/24
             - --secure-port=443
-            - --advertise-address=$private_ipv4
+            - --advertise-address=192.168.1.100
             - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
             - --tls-cert-file=/etc/kubernetes/ssl/k8s-apiserver.pem
             - --tls-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
@@ -268,7 +268,7 @@ etcd:
   peer_key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
 
 flannel:
-  interface: $private_ipv4
+  interface: 192.168.1.100
   etcd_endpoints: https://192.168.1.100:2379
   etcd_cafile: /etc/kubernetes/ssl/ca.pem
   etcd_certfile: /etc/kubernetes/ssl/k8s-apiserver.pem
@@ -331,11 +331,11 @@ systemd:
           Environment="ETCD_SSL_DIR=/etc/kubernetes/ssl"
           ExecStartPre=/usr/bin/curl \
               --silent -X PUT \
-              --cacert $${FLANNELD_ETCD_CAFILE} \
-              --cert $${FLANNELD_ETCD_CERTFILE} \
-              --key $${FLANNELD_ETCD_KEYFILE} \
+              --cacert /etc/kubernetes/ssl/ca.pem \
+              --cert /etc/kubernetes/ssl/k8s-apiserver.pem \
+              --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \
               -d "value={\"Network\" : \"10.2.0.0/16\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
-              $${FLANNELD_ETCD_ENDPOINTS}/v2/keys/coreos.com/network/config?prevExist=false
+              https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false
   - name: kubelet.service
     enable: true
     contents: |
