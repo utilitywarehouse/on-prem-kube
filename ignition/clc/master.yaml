@@ -258,10 +258,10 @@ etcd:
   listen_client_urls: "https://0.0.0.0:2379"
   advertise_client_urls: "https://192.168.1.100:2379"
   initial_advertise_peer_urls: "https://192.168.1.100:2380"
-  #client_cert_auth: "true"
-  #trusted_ca_file: "/etc/etcd/ssl/ca.pem"
-  #cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
-  #key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+  client_cert_auth: true
+  trusted_ca_file: "/etc/ssl/certs/ca.pem"
+  cert_file: "/etc/ssl/certs/k8s-etcd.pem"
+  key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
   peer_client_cert_auth: true
   peer_trusted_ca_file: "/etc/ssl/certs/ca.pem"
   peer_cert_file: "/etc/ssl/certs/k8s-etcd.pem"
