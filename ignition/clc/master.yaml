@@ -263,9 +263,9 @@ etcd:
   cert_file: "/etc/ssl/certs/k8s-etcd.pem"
   key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
   peer_client_cert_auth: true
-  peer_trusted_ca_file: "/etc/ssl/certs/ca.pem"
-  peer_cert_file: "/etc/ssl/certs/k8s-etcd.pem"
-  peer_key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
+  peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+  peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+  peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
 
 flannel:
   version: 0.7.1
@@ -404,7 +404,7 @@ systemd:
       ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
       ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
       ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
-      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/ssl/certs/"
+      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/etcd/ssl/"
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/"
       RemainAfterExit=yes
       Type=oneshot
