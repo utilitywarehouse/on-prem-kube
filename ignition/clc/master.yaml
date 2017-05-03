@@ -268,6 +268,7 @@ etcd:
   peer_key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
 
 flannel:
+  version: 0.7.1
   interface: 192.168.1.100
   etcd_endpoints: https://192.168.1.100:2379
   etcd_cafile: /etc/ssl/certs/ca.pem
