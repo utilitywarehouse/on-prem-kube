@@ -26,18 +26,18 @@ storage:
             - apiserver
             - --bind-address=0.0.0.0
             - --etcd-servers=https://192.168.1.100:2379
-            - --etcd-cafile=/etc/ssl/certs/ca.pem
-            - --etcd-certfile=/etc/ssl/certs/k8s-apiserver.pem
-            - --etcd-keyfile=/etc/ssl/certs/k8s-apiserver-key.pem
+            - --etcd-cafile=/etc/kubernetes/ssl/ca.pem
+            - --etcd-certfile=/etc/kubernetes/ssl/k8s-apiserver.pem
+            - --etcd-keyfile=/etc/kubernetes/ssl/k8s-apiserver-key.pem
             - --allow-privileged=true
             - --service-cluster-ip-range=10.3.0.0/24
             - --secure-port=443
             - --advertise-address=192.168.1.100
             - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
-            - --tls-cert-file=/etc/ssl/certs/k8s-apiserver.pem
-            - --tls-private-key-file=/etc/ssl/certs/k8s-apiserver-key.pem
-            - --client-ca-file=/etc/ssl/certs/ca.pem
-            - --service-account-key-file=/etc/ssl/certs/k8s-apiserver-key.pem
+            - --tls-cert-file=/etc/kubernetes/ssl/k8s-apiserver.pem
+            - --tls-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --client-ca-file=/etc/kubernetes/ssl/ca.pem
+            - --service-account-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
             - --service-account-lookup=true
             - --runtime-config=extensions/v1beta1=true,extensions/v1beta1/deployments=true,extensions/v1beta1/daemonsets=true,extensions/v1beta1/networkpolicies=true,extensions/v1beta1/thirdpartyresources=true,rbac.authorization.k8s.io/v1beta1=true,batch/v2alpha1=true
             - --cloud-provider=aws
@@ -127,8 +127,8 @@ storage:
             - controller-manager
             - --master=http://127.0.0.1:8080
             - --leader-elect=true
-            - --service-account-private-key-file=/etc/ssl/certs/k8s-apiserver-key.pem
-            - --root-ca-file=/etc/ssl/certs/ca.pem
+            - --service-account-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+            - --root-ca-file=/etc/kubernetes/ssl/ca.pem
             - --cloud-provider=aws
             - --configure-cloud-routes=false
             - --allocate-node-cidrs=true
@@ -231,13 +231,13 @@ storage:
         clusters:
         - name: local
           cluster:
-            certificate-authority: /etc/ssl/certs/ca.pem
+            certificate-authority: /etc/kubernetes/ssl/ca.pem
             server: http://127.0.0.1:8080
         users:
         - name: kubelet
           user:
-            client-certificate: /etc/ssl/certs/k8s-apiserver.pem
-            client-key: /etc/ssl/certs/k8s-apiserver-key.pem
+            client-certificate: /etc/kubernetes/ssl/k8s-apiserver.pem
+            client-key: /etc/kubernetes/ssl/k8s-apiserver-key.pem
         contexts:
         - context:
             cluster: local
@@ -271,9 +271,9 @@ flannel:
   version: 0.7.1
   interface: 192.168.1.100
   etcd_endpoints: https://192.168.1.100:2379
-  etcd_cafile: /etc/ssl/certs/ca.pem
-  etcd_certfile: /etc/ssl/certs/k8s-apiserver.pem
-  etcd_keyfile: /etc/ssl/certs/k8s-apiserver-key.pem
+  etcd_cafile: /etc/kubernetes/ssl/ca.pem
+  etcd_certfile: /etc/kubernetes/ssl/k8s-apiserver.pem
+  etcd_keyfile: /etc/kubernetes/ssl/k8s-apiserver-key.pem
 
 systemd:
   units:
@@ -326,14 +326,14 @@ systemd:
       - name: 10-etcd.conf
         contents: |
           [Unit]
-          Requires=get-ssl.service etcd-member.service
-          After=get-ssl.service etcd-member.service
+          Requires=get-ssl.service
+          After=get-ssl.service
           [Service]
           ExecStartPre=/usr/bin/curl \
               --silent -X PUT \
-              --cacert /etc/ssl/certs/ca.pem \
-              --cert /etc/ssl/certs/k8s-apiserver.pem \
-              --key /etc/ssl/certs/k8s-apiserver-key.pem \
+              --cacert /etc/kubernetes/ssl/ca.pem \
+              --cert /etc/kubernetes/ssl/k8s-apiserver.pem \
+              --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \
               -d "value={\"Network\" : \"10.2.0.0/16\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
               https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false
   - name: kubelet.service
@@ -405,6 +405,6 @@ systemd:
       ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
       ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-etcd.tar | tar xv -C /etc/ssl/certs/"
-      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/ssl/certs/"
+      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/"
       RemainAfterExit=yes
       Type=oneshot
