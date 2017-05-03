@@ -155,7 +155,7 @@
           },
           {
             "name": "20-custom-options.conf",
-            "contents": "Environment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\nExecStartPre=/usr/bin/mkdir -p /etc/etcd\n"
+            "contents": "ExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
           }
         ]
       },
