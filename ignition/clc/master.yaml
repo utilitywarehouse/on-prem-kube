@@ -302,8 +302,8 @@ systemd:
     - name: 10-wait-etcd.conf
       contents: |
         [Unit]
-        After=var-lib-etcd.mount get-ssl.service
-        Requires=var-lib-etcd.mount get-ssl.service
+        After=var.mount get-ssl.service
+        Requires=var.mount get-ssl.service
     - name: 20-custom-options.conf
       contents: |
         Environment="RKT_RUN_ARGS=\

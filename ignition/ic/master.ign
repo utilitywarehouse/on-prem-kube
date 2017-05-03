@@ -151,7 +151,7 @@
         "dropins": [
           {
             "name": "10-wait-etcd.conf",
-            "contents": "[Unit]\nAfter=var-lib-etcd.mount get-ssl.service\nRequires=var-lib-etcd.mount get-ssl.service\n"
+            "contents": "[Unit]\nAfter=var.mount get-ssl.service\nRequires=var.mount get-ssl.service\n"
           },
           {
             "name": "20-custom-options.conf",
