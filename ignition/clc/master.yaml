@@ -328,7 +328,6 @@ systemd:
           Requires=get-ssl.service etcd-member.service
           After=get-ssl.service etcd-member.service
           [Service]
-          Environment="ETCD_SSL_DIR=/etc/kubernetes/ssl"
           ExecStartPre=/usr/bin/curl \
               --silent -X PUT \
               --cacert /etc/ssl/certs/ca.pem \

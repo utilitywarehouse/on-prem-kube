@@ -175,7 +175,7 @@
         "dropins": [
           {
             "name": "10-etcd.conf",
-            "contents": "[Unit]\nRequires=get-ssl.service etcd-member.service\nAfter=get-ssl.service etcd-member.service\n[Service]\nEnvironment=\"ETCD_SSL_DIR=/etc/kubernetes/ssl\"\nExecStartPre=/usr/bin/curl \\\n    --silent -X PUT \\\n    --cacert /etc/ssl/certs/ca.pem \\\n    --cert /etc/ssl/certs/k8s-apiserver.pem \\\n    --key /etc/ssl/certs/k8s-apiserver-key.pem \\\n    -d \"value={\\\"Network\\\" : \\\"10.2.0.0/16\\\", \\\"Backend\\\" : {\\\"Type\\\" : \\\"vxlan\\\"}}\" \\\n    https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false\n"
+            "contents": "[Unit]\nRequires=get-ssl.service etcd-member.service\nAfter=get-ssl.service etcd-member.service\n[Service]\nExecStartPre=/usr/bin/curl \\\n    --silent -X PUT \\\n    --cacert /etc/ssl/certs/ca.pem \\\n    --cert /etc/ssl/certs/k8s-apiserver.pem \\\n    --key /etc/ssl/certs/k8s-apiserver-key.pem \\\n    -d \"value={\\\"Network\\\" : \\\"10.2.0.0/16\\\", \\\"Backend\\\" : {\\\"Type\\\" : \\\"vxlan\\\"}}\" \\\n    https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false\n"
           }
         ]
       },
