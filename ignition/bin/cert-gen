@@ -3,7 +3,7 @@
 set -e
 
 # Check `cfssl` is in the $PATH
-type -P "cfssl" && echo "cfssl in path" || exit 1
+type cfssl || exit 1
 
 # Ensure work dir exists
 mkdir -p certs
