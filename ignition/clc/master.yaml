@@ -282,8 +282,6 @@ systemd:
     contents: |
       [Unit]
       Description=Mount ephemeral to /var
-      Requires=format-ephemeral.service
-      After=format-ephemeral.service
       [Mount]
       What=/dev/sda
       Where=/var
@@ -305,7 +303,7 @@ systemd:
         [Unit]
         After=var.mount get-ssl.service
         Requires=var.mount get-ssl.service
-    - name: 20-custom-options.conf
+    - name: 15-custom-options.conf
       contents: |
         ExecStartPre=/usr/bin/mkdir -p /etc/etcd
         Environment="RKT_RUN_ARGS=\
