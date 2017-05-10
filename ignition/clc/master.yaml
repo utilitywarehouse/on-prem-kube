@@ -250,22 +250,22 @@ storage:
       inline: |
         machine_role{role="master"} 1
 
-etcd:
-  version: 3.1.6
-  name: "member0"
-  initial_cluster: "member0=https://192.168.1.100:2380"
-  listen_peer_urls: "https://192.168.1.100:2380"
-  listen_client_urls: "https://0.0.0.0:2379"
-  advertise_client_urls: "https://192.168.1.100:2379"
-  initial_advertise_peer_urls: "https://192.168.1.100:2380"
-  client_cert_auth: true
-  trusted_ca_file: "/etc/ssl/certs/ca.pem"
-  cert_file: "/etc/ssl/certs/k8s-etcd.pem"
-  key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
-  peer_client_cert_auth: true
-  peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
-  peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
-  peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
+#etcd:
+#  version: 3.1.6
+#  name: "member0"
+#  initial_cluster: "member0=https://192.168.1.100:2380"
+#  listen_peer_urls: "https://192.168.1.100:2380"
+#  listen_client_urls: "https://0.0.0.0:2379"
+#  advertise_client_urls: "https://192.168.1.100:2379"
+#  initial_advertise_peer_urls: "https://192.168.1.100:2380"
+#  client_cert_auth: true
+#  trusted_ca_file: "/etc/ssl/certs/ca.pem"
+#  cert_file: "/etc/ssl/certs/k8s-etcd.pem"
+#  key_file: "/etc/ssl/certs/k8s-etcd-key.pem"
+#  peer_client_cert_auth: true
+#  peer_trusted_ca_file: "/etc/etcd/ssl/ca.pem"
+#  peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
+#  peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
 
 flannel:
   version: 0.7.1
@@ -306,6 +306,22 @@ systemd:
     - name: 15-custom-options.conf
       contents: |
         ExecStartPre=/usr/bin/mkdir -p /etc/etcd
+        Environment="ETCD_IMAGE_URL=quay.io/coreos/etcd"
+        Environment="ETCD_IMAGE_TAG=v3.1.6"
+        Environment="ETCD_NAME=member0"
+        Environment="ETCD_INITIAL_CLUSTER=member0=https://192.168.1.100:2380"
+        Environment="ETCD_LISTEN_PEER_URLS=https://192.168.1.100:2380"
+        Environment="ETCD_LISTEN_CLIENT_URLS=https://0.0.0.0:2379"
+        Environment="ETCD_ADVERTISE_CLIENT_URLS=https://0.0.0.0:2379"
+        Environment="ETCD_INITIAL_ADVERTISE_PEER_URLS=https://192.168.1.100:2380"
+        Environment="ETCD_CLIENT_CERT_AUTH=true"
+        Environment="ETCD_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem"
+        Environment="ETCD_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem"
+        Environment="ETCD_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem"
+        Environment="ETCD_PEER_CLIENT_CERT_AUTH=true"
+        Environment="ETCD_PEER_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem"
+        Environment="ETCD_PEER_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem"
+        Environment="ETCD_PEER_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem"
         Environment="RKT_RUN_ARGS=\
           --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \
           --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \

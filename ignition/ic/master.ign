@@ -112,16 +112,6 @@
   "systemd": {
     "units": [
       {
-        "name": "etcd-member.service",
-        "enable": true,
-        "dropins": [
-          {
-            "name": "20-clct-etcd-member.conf",
-            "contents": "[Service]\nEnvironment=\"ETCD_IMAGE_TAG=v3.1.6\"\nExecStart=\nExecStart=/usr/lib/coreos/etcd-wrapper $ETCD_OPTS \\\n  --name=\"member0\" \\\n  --listen-peer-urls=\"https://192.168.1.100:2380\" \\\n  --listen-client-urls=\"https://0.0.0.0:2379\" \\\n  --initial-advertise-peer-urls=\"https://192.168.1.100:2380\" \\\n  --initial-cluster=\"member0=https://192.168.1.100:2380\" \\\n  --advertise-client-urls=\"https://192.168.1.100:2379\" \\\n  --cert-file=\"/etc/ssl/certs/k8s-etcd.pem\" \\\n  --key-file=\"/etc/ssl/certs/k8s-etcd-key.pem\" \\\n  --client-cert-auth=true \\\n  --trusted-ca-file=\"/etc/ssl/certs/ca.pem\" \\\n  --peer-cert-file=\"/etc/etcd/ssl/k8s-etcd.pem\" \\\n  --peer-key-file=\"/etc/etcd/ssl/k8s-etcd-key.pem\" \\\n  --peer-client-cert-auth=true \\\n  --peer-trusted-ca-file=\"/etc/etcd/ssl/ca.pem\""
-          }
-        ]
-      },
-      {
         "name": "flanneld.service",
         "enable": true,
         "dropins": [
@@ -155,7 +145,7 @@
           },
           {
             "name": "15-custom-options.conf",
-            "contents": "ExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
+            "contents": "ExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"ETCD_IMAGE_URL=quay.io/coreos/etcd\"\nEnvironment=\"ETCD_IMAGE_TAG=v3.1.6\"\nEnvironment=\"ETCD_NAME=member0\"\nEnvironment=\"ETCD_INITIAL_CLUSTER=member0=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_LISTEN_PEER_URLS=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_LISTEN_CLIENT_URLS=https://0.0.0.0:2379\"\nEnvironment=\"ETCD_ADVERTISE_CLIENT_URLS=https://0.0.0.0:2379\"\nEnvironment=\"ETCD_INITIAL_ADVERTISE_PEER_URLS=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_CLIENT_CERT_AUTH=true\"\nEnvironment=\"ETCD_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem\"\nEnvironment=\"ETCD_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem\"\nEnvironment=\"ETCD_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem\"\nEnvironment=\"ETCD_PEER_CLIENT_CERT_AUTH=true\"\nEnvironment=\"ETCD_PEER_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem\"\nEnvironment=\"ETCD_PEER_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem\"\nEnvironment=\"ETCD_PEER_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem\"\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
           }
         ]
       },
