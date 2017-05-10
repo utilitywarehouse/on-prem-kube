@@ -328,6 +328,10 @@ systemd:
           Requires=get-ssl.service
           After=get-ssl.service
           [Service]
+          Environment="RKT_RUN_ARGS=\
+            --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \
+            --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \
+            --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl"
           ExecStartPre=/usr/bin/curl \
               --silent -X PUT \
               --cacert /etc/kubernetes/ssl/ca.pem \

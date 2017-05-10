@@ -175,7 +175,7 @@
         "dropins": [
           {
             "name": "10-etcd.conf",
-            "contents": "[Unit]\nRequires=get-ssl.service\nAfter=get-ssl.service\n[Service]\nExecStartPre=/usr/bin/curl \\\n    --silent -X PUT \\\n    --cacert /etc/kubernetes/ssl/ca.pem \\\n    --cert /etc/kubernetes/ssl/k8s-apiserver.pem \\\n    --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \\\n    -d \"value={\\\"Network\\\" : \\\"10.2.0.0/16\\\", \\\"Backend\\\" : {\\\"Type\\\" : \\\"vxlan\\\"}}\" \\\n    https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false\n"
+            "contents": "[Unit]\nRequires=get-ssl.service\nAfter=get-ssl.service\n[Service]\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \\\n  --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \\\n  --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl\"\nExecStartPre=/usr/bin/curl \\\n    --silent -X PUT \\\n    --cacert /etc/kubernetes/ssl/ca.pem \\\n    --cert /etc/kubernetes/ssl/k8s-apiserver.pem \\\n    --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \\\n    -d \"value={\\\"Network\\\" : \\\"10.2.0.0/16\\\", \\\"Backend\\\" : {\\\"Type\\\" : \\\"vxlan\\\"}}\" \\\n    https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false\n"
           }
         ]
       },
