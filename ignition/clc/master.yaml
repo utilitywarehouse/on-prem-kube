@@ -224,7 +224,7 @@ storage:
           ]
         }
   - filesystem: root
-    path: /var/lib/kubelet/kubeconfig
+    path: /srv/kubernetes/kubeconfig
     contents:
       inline: |
         kind: Config
@@ -365,7 +365,7 @@ systemd:
       ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
       ExecStart=/usr/lib/coreos/kubelet-wrapper \
         --require-kubeconfig=true \
-        --kubeconfig=/var/lib/kubelet/kubeconfig \
+        --kubeconfig=/srv/kubernetes/kubeconfig \
         --node-labels=role=master \
         --register-node=true \
         --register-schedulable=false \
