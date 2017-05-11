@@ -9,6 +9,7 @@ storage:
   files:
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-apiserver.yaml
+    mode: 644
     contents:
       inline: |
         apiVersion: v1
@@ -81,6 +82,7 @@ storage:
             name: ssl-certs-host
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-proxy.yaml
+    mode: 644
     contents:
       inline: |
         apiVersion: v1
@@ -111,6 +113,7 @@ storage:
             name: ssl-certs-host
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    mode: 644
     contents:
       inline: |
         apiVersion: v1
@@ -161,6 +164,7 @@ storage:
             name: ssl-certs-host
   - filesystem: root
     path: /etc/kubernetes/manifests/kube-scheduler.yaml
+    mode: 644
     contents:
       inline: |
         apiVersion: v1
@@ -191,12 +195,14 @@ storage:
               timeoutSeconds: 15
   - filesystem: root
     path: /opt/bin/install-kube-system
+    mode: 644
     contents:
       inline: |
         #!/bin/bash -e
         /usr/bin/curl -H "Content-Type: application/json" -XPOST -d @"/srv/kubernetes/manifests/kube-system.json" "http://127.0.0.1:8080/api/v1/namespaces"
   - filesystem: root
     path: /srv/kubernetes/manifests/kube-system.json
+    mode: 644
     contents:
       inline: |
         {
@@ -208,6 +214,7 @@ storage:
         }
   - filesystem: root
     path: /srv/kubernetes/manifests/network-policy.json
+    mode: 644
     contents:
       inline: |
         {
@@ -225,6 +232,7 @@ storage:
         }
   - filesystem: root
     path: /srv/kubernetes/kubeconfig
+    mode: 644
     contents:
       inline: |
         kind: Config
@@ -246,6 +254,7 @@ storage:
         current-context: kubelet-cluster.local
   - filesystem: root
     path: /etc/prom-text-collectors/machine_role.prom
+    mode: 644
     contents:
       inline: |
         machine_role{role="master"} 1

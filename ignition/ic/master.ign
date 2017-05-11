@@ -24,6 +24,7 @@
           "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-apiserver%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-apiserver%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20apiserver%0A%20%20%20%20-%20--bind-address%3D0.0.0.0%0A%20%20%20%20-%20--etcd-servers%3Dhttps%3A%2F%2F192.168.1.100%3A2379%0A%20%20%20%20-%20--etcd-cafile%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--etcd-certfile%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20-%20--etcd-keyfile%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--allow-privileged%3Dtrue%0A%20%20%20%20-%20--service-cluster-ip-range%3D10.3.0.0%2F24%0A%20%20%20%20-%20--secure-port%3D443%0A%20%20%20%20-%20--advertise-address%3D192.168.1.100%0A%20%20%20%20-%20--admission-control%3DNamespaceLifecycle%2CLimitRanger%2CServiceAccount%2CResourceQuota%0A%20%20%20%20-%20--tls-cert-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20-%20--tls-private-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--client-ca-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--service-account-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--service-account-lookup%3Dtrue%0A%20%20%20%20-%20--runtime-config%3Dextensions%2Fv1beta1%3Dtrue%2Cextensions%2Fv1beta1%2Fdeployments%3Dtrue%2Cextensions%2Fv1beta1%2Fdaemonsets%3Dtrue%2Cextensions%2Fv1beta1%2Fnetworkpolicies%3Dtrue%2Cextensions%2Fv1beta1%2Fthirdpartyresources%3Dtrue%2Crbac.authorization.k8s.io%2Fv1beta1%3Dtrue%2Cbatch%2Fv2alpha1%3Dtrue%0A%20%20%20%20-%20--cloud-provider%3Daws%0A%20%20%20%20-%20--oidc-issuer-url%3Dhttps%3A%2F%2Faccounts.google.com%0A%20%20%20%20-%20--oidc-username-claim%3Demail%0A%20%20%20%20-%20--oidc-client-id%3D524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com%0A%20%20%20%20-%20--authorization-rbac-super-user%3Dk8s-admin%0A%20%20%20%20-%20--authorization-mode%3DRBAC%0A%20%20%20%20-%20--apiserver-count%3D1%0A%20%20%20%20-%20--audit-log-path%3D%2Fdev%2Fstdout%0A%20%20%20%20-%20--storage-backend%3Detcd3%0A%20%20%20%20-%20--storage-media-type%3Dapplication%2Fjson%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20port%3A%208080%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A%20%20%20%20ports%3A%0A%20%20%20%20-%20containerPort%3A%20443%0A%20%20%20%20%20%20hostPort%3A%20443%0A%20%20%20%20%20%20name%3A%20https%0A%20%20%20%20-%20containerPort%3A%208080%0A%20%20%20%20%20%20hostPort%3A%208080%0A%20%20%20%20%20%20name%3A%20local%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -34,6 +35,7 @@
           "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-proxy%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-proxy%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20proxy%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--proxy-mode%3Diptables%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20securityContext%3A%0A%20%20%20%20%20%20privileged%3A%20true%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -44,6 +46,7 @@
           "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-controller-manager%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-controller-manager%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20controller-manager%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--leader-elect%3Dtrue%0A%20%20%20%20-%20--service-account-private-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--root-ca-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--cloud-provider%3Daws%0A%20%20%20%20-%20--configure-cloud-routes%3Dfalse%0A%20%20%20%20-%20--allocate-node-cidrs%3Dtrue%0A%20%20%20%20-%20--cluster-cidr%3D10.2.0.0%2F16%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20resources%3A%0A%20%20%20%20%20%20requests%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20200m%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20%20%20port%3A%2010252%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20hostNetwork%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -54,6 +57,7 @@
           "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-scheduler%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-scheduler%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20scheduler%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--leader-elect%3Dtrue%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20resources%3A%0A%20%20%20%20%20%20requests%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20100m%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20%20%20port%3A%2010251%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -64,6 +68,7 @@
           "source": "data:,%23!%2Fbin%2Fbash%20-e%0A%2Fusr%2Fbin%2Fcurl%20-H%20%22Content-Type%3A%20application%2Fjson%22%20-XPOST%20-d%20%40%22%2Fsrv%2Fkubernetes%2Fmanifests%2Fkube-system.json%22%20%22http%3A%2F%2F127.0.0.1%3A8080%2Fapi%2Fv1%2Fnamespaces%22%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -74,6 +79,7 @@
           "source": "data:,%7B%0A%20%20%22apiVersion%22%3A%20%22v1%22%2C%0A%20%20%22kind%22%3A%20%22Namespace%22%2C%0A%20%20%22metadata%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22kube-system%22%0A%20%20%7D%0A%7D%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -84,6 +90,7 @@
           "source": "data:,%7B%0A%20%20%22kind%22%3A%20%22ThirdPartyResource%22%2C%0A%20%20%22apiVersion%22%3A%20%22extensions%2Fv1beta1%22%2C%0A%20%20%22metadata%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22network-policy.net.alpha.kubernetes.io%22%0A%20%20%7D%2C%0A%20%20%22description%22%3A%20%22Specification%20for%20a%20network%20isolation%20policy%22%2C%0A%20%20%22versions%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22name%22%3A%20%22v1alpha1%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -94,6 +101,7 @@
           "source": "data:,kind%3A%20Config%0Aclusters%3A%0A-%20name%3A%20local%0A%20%20cluster%3A%0A%20%20%20%20certificate-authority%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20server%3A%20http%3A%2F%2F127.0.0.1%3A8080%0Ausers%3A%0A-%20name%3A%20kubelet%0A%20%20user%3A%0A%20%20%20%20client-certificate%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20client-key%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0Acontexts%3A%0A-%20context%3A%0A%20%20%20%20cluster%3A%20local%0A%20%20%20%20user%3A%20kubelet%0A%20%20name%3A%20kubelet-cluster.local%0Acurrent-context%3A%20kubelet-cluster.local%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       },
@@ -104,6 +112,7 @@
           "source": "data:,machine_role%7Brole%3D%22master%22%7D%201%0A",
           "verification": {}
         },
+        "mode": 644,
         "user": {},
         "group": {}
       }
