@@ -130,7 +130,6 @@ storage:
             - --leader-elect=true
             - --service-account-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
             - --root-ca-file=/etc/kubernetes/ssl/ca.pem
-            - --cloud-provider=aws
             - --configure-cloud-routes=false
             - --allocate-node-cidrs=true
             - --cluster-cidr=10.2.0.0/16
