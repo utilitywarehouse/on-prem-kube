@@ -260,7 +260,7 @@ storage:
     mode: 420
     contents:
       inline: |
-        master0
+        master0-borg.uw.systems
 etcd:
   version: 3.1.6
   name: "member0"

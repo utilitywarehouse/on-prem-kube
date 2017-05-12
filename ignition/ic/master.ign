@@ -120,7 +120,7 @@
         "filesystem": "root",
         "path": "/etc/hostname",
         "contents": {
-          "source": "data:,master0%0A",
+          "source": "data:,master0-borg.uw.systems%0A",
           "verification": {}
         },
         "mode": 420,
