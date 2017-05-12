@@ -10,12 +10,18 @@ mkdir -p certs
 cd certs
 
 # Certificate Generation for the CA
-echo '{"signing":{"default":{"expiry":"43800h" },"profiles":{"server":{"expiry":"43800h","usages":["signing","key encipherment","server auth"]},"client":{"expiry":"43800h","usages":["signing","key encipherment","client auth"]},"client-server":{"expiry":"43800h","usages":["signing","key encipherment","server auth","client auth"]}}}}' > ca-config.json
 echo '{"CN":"UtilityWarehouse CA","key":{"algo":"rsa","size":2048},"names":[{"C":"UK","L":"London","O":"UtilityWarehouse"}]}' | cfssl gencert -initca - | cfssljson -bare ca -
+
+echo '{"signing":{"default":{"expiry":"43800h" },"profiles":{"server":{"expiry":"43800h","usages":["signing","key encipherment","server auth"]},"client":{"expiry":"43800h","usages":["signing","key encipherment","client auth"]},"client-server":{"expiry":"43800h","usages":["signing","key encipherment","server auth","client auth"]}}}}' > ca-config.json
 
 function csr {
   cat <<EOF
-{"CN":"$1","hosts":[""],"key":{"algo":"rsa","size":2048}}
+{
+  "CN":"$1",
+  "hosts":[""],
+  "key":{"algo":"rsa","size":2048},
+  "names": [{"O": "$2"}]
+}
 EOF
 }
 
@@ -26,25 +32,26 @@ function _chmod {
 
 function generate {
   CN=$1
-  PROFILE=$2
-  HOSTS=$3
+  GROUP=$2
+  PROFILE=$3
+  HOSTS=$4
 
-  echo "$(csr $CN)" | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=$PROFILE -hostname="$HOSTS" - | cfssljson -bare $CN
+  echo "$(csr $CN ${GROUP})" | cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=$PROFILE -hostname="$HOSTS" - | cfssljson -bare $CN
   _chmod $CN
   tar -cf $CN.tar ca.pem $CN.pem ${CN}-key.pem
 }
 
 # Admin
-generate k8s-admin client-server "10.3.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,elb.master.$NAME_SUFFIX,*.master.$NAME_SUFFIX"
+generate k8s-admin system:masters client-server "192.168.1.100,10.3.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,elb.master.$NAME_SUFFIX,*.master.$NAME_SUFFIX"
 
 # Api Server
-generate k8s-apiserver client-server "10.3.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,elb.master.$NAME_SUFFIX,*.master.$NAME_SUFFIX"
+generate k8s-apiserver system:masters client-server "192.168.1.100,10.3.0.1,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,elb.master.$NAME_SUFFIX,*.master.$NAME_SUFFIX"
 
 # Worker
-generate k8s-worker client "*.worker.$NAME_SUFFIX"
+generate k8s-worker system:workers client "*.worker.$NAME_SUFFIX"
 
 # etcd
-generate k8s-etcd client-server "192.168.1.100,etcd.$NAME_SUFFIX,*.etcd.$NAME_SUFFIX,$ETCD_ADDRESSES"
+generate k8s-etcd system:etcd client-server "192.168.1.100,etcd.$NAME_SUFFIX,*.etcd.$NAME_SUFFIX,$ETCD_ADDRESSES"
 
 ## Clean up
 rm ca-config.json

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp -r certs/ca* ~/.kube/certs/borg/
+cp -r certs/k8s-admin* ~/.kube/certs/borg/

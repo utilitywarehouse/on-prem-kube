@@ -44,7 +44,6 @@ storage:
             - --oidc-issuer-url=https://accounts.google.com
             - --oidc-username-claim=email
             - --oidc-client-id=524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com
-            - --authorization-rbac-super-user=k8s-admin
             - --authorization-mode=RBAC
             - --apiserver-count=1
             - --audit-log-path=/dev/stdout
@@ -257,7 +256,12 @@ storage:
     contents:
       inline: |
         machine_role{role="master"} 1
-
+  - filesystem: root
+    path: /etc/hostname
+    mode: 420
+    contents:
+      inline: |
+        master0
 etcd:
   version: 3.1.6
   name: "member0"
