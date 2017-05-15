@@ -154,14 +154,19 @@
       {
         "name": "var.mount",
         "enable": true,
-        "contents": "[Unit]\nDescription=Mount ephemeral to /var\n[Mount]\nWhat=/dev/sda\nWhere=/var\nType=ext4\n[Install]\nWantedBy=multi-user.target\n"
+        "contents": "[Unit]\nDescription=Mount ephemeral to /var\n[Mount]\nWhat=/dev/sda\nWhere=/var\nType=ext4\n"
       },
       {
         "name": "docker.service",
+        "enable": true,
         "dropins": [
           {
-            "name": "10-wait-docker.conf",
+            "name": "10-var-mount.conf",
             "contents": "[Unit]\nAfter=var.mount\nRequires=var.mount\n"
+          },
+          {
+            "name": "40-flannel.conf",
+            "contents": "[Unit]\nRequires=flanneld.service\nAfter=flanneld.service\n"
           }
         ]
       },
@@ -176,16 +181,6 @@
           {
             "name": "15-custom-options.conf",
             "contents": "[Service]\nExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
-          }
-        ]
-      },
-      {
-        "name": "docker.service",
-        "enable": true,
-        "dropins": [
-          {
-            "name": "40-flannel.conf",
-            "contents": "[Unit]\nRequires=flanneld.service\nAfter=flanneld.service\n"
           }
         ]
       },
