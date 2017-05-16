@@ -169,18 +169,9 @@
         ]
       },
       {
-        "name": "var.mount",
-        "enable": true,
-        "contents": "[Unit]\nDescription=Mount ephemeral to /var\nRequires=format-var.service\nAfter=format-var.service\n[Mount]\nWhat=/dev/sda\nWhere=/var\nType=ext4\n[Install]\nWantedBy=multi-user.target\n"
-      },
-      {
         "name": "docker.service",
         "enable": true,
         "dropins": [
-          {
-            "name": "10-var-mount.conf",
-            "contents": "[Unit]\nAfter=var.mount\nRequires=var.mount\n"
-          },
           {
             "name": "40-flannel.conf",
             "contents": "[Unit]\nRequires=flanneld.service\nAfter=flanneld.service\n"
@@ -193,7 +184,7 @@
         "dropins": [
           {
             "name": "10-wait-etcd.conf",
-            "contents": "[Unit]\nAfter=var.mount get-ssl.service\nRequires=var.mount get-ssl.service\n"
+            "contents": "[Unit]\nAfter=get-ssl.service\nRequires=get-ssl.service\n"
           },
           {
             "name": "15-custom-options.conf",
@@ -219,7 +210,7 @@
       {
         "name": "install-kube-system.service",
         "enable": true,
-        "contents": "[Unit]\nRequires=kubelet.service docker.service\nAfter=kubelet.service docker.service\n\n[Service]\nType=simple\nStartLimitInterval=0\nRestart=on-failure\nRestartSec=10\nExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version\nExecStart=/opt/bin/install-kube-system\n"
+        "contents": "[Unit]\nRequires=kubelet.service docker.service\nAfter=kubelet.service docker.service\n[Service]\nType=simple\nStartLimitInterval=0\nRestart=on-failure\nRestartSec=10\nExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version\nExecStart=/opt/bin/install-kube-system\n"
       },
       {
         "name": "get-ssl.service",

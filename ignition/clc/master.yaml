@@ -295,27 +295,9 @@ flannel:
 
 systemd:
   units:
-  - name: var.mount
-    enable: true
-    contents: |
-      [Unit]
-      Description=Mount ephemeral to /var
-      Requires=format-var.service
-      After=format-var.service
-      [Mount]
-      What=/dev/sda
-      Where=/var
-      Type=ext4
-      [Install]
-      WantedBy=multi-user.target
   - name: docker.service
     enable: true
     dropins:
-      - name: 10-var-mount.conf
-        contents: |
-          [Unit]
-          After=var.mount
-          Requires=var.mount
       - name: 40-flannel.conf
         contents: |
           [Unit]
@@ -327,8 +309,8 @@ systemd:
     - name: 10-wait-etcd.conf
       contents: |
         [Unit]
-        After=var.mount get-ssl.service
-        Requires=var.mount get-ssl.service
+        After=get-ssl.service
+        Requires=get-ssl.service
     - name: 15-custom-options.conf
       contents: |
         [Service]
@@ -407,7 +389,6 @@ systemd:
       [Unit]
       Requires=kubelet.service docker.service
       After=kubelet.service docker.service
-
       [Service]
       Type=simple
       StartLimitInterval=0
