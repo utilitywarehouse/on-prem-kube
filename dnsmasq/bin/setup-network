@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# iptables
+sudo iptables -t nat -A POSTROUTING -o wlp3s0 -j MASQUERADE
+sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i enp0s25  -o wlp3s0 -j ACCEPT
+
+# interfaces
+sudo ip link set up dev enp0s25
+sudo ip addr add 192.168.1.1/24 dev enp0s25 || echo already set # arbitrary address

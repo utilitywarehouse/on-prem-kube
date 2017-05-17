@@ -17,6 +17,7 @@ push_latest:
 
 last_built_date:
 	docker inspect -f '{{ .Created }}' $(NAME):$(VERSION)
-
 run:
 	docker run --net=host --rm --cap-add=NET_ADMIN $(NAME):$(VERSION) -d -q 
+setup-network:
+	./bin/setup-network

@@ -26,8 +26,4 @@ sudo ip link set up dev enp0s25
 sudo ip addr add 192.168.1.1/24 dev enp0s25 # arbitrary address
 ```
 
-MAC addresses for machines:
-
-```
-dell-01: f8:b1:56:9b:1b:6a
-```
+Or run `make setup-network` target in dnsmasq/
