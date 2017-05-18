@@ -286,7 +286,7 @@ etcd:
   peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
 
 flannel:
-  version: 0.7.1
+  version: 0.6.2
   interface: 192.168.1.100
   etcd_endpoints: https://192.168.1.100:2379
   etcd_cafile: /etc/kubernetes/ssl/ca.pem

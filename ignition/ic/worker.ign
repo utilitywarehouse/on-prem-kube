@@ -88,7 +88,7 @@
         "dropins": [
           {
             "name": "20-clct-flannel.conf",
-            "contents": "[Service]\nEnvironment=\"FLANNEL_IMAGE_TAG=v0.7.1\"\nExecStart=\nExecStart=/usr/lib/coreos/flannel-wrapper $FLANNEL_OPTS \\\n  --etcd-endpoints=\"https://192.168.1.100:2379\" \\\n  --etcd-cafile=\"/etc/kubernetes/ssl/ca.pem\" \\\n  --etcd-certfile=\"/etc/kubernetes/ssl/k8s-worker.pem\" \\\n  --etcd-keyfile=\"/etc/kubernetes/ssl/k8s-worker-key.pem\" \\\n  --iface=\"192.168.1.110\""
+            "contents": "[Service]\nEnvironment=\"FLANNEL_IMAGE_TAG=v0.6.2\"\nExecStart=\nExecStart=/usr/lib/coreos/flannel-wrapper $FLANNEL_OPTS \\\n  --etcd-endpoints=\"https://192.168.1.100:2379\" \\\n  --etcd-cafile=\"/etc/kubernetes/ssl/ca.pem\" \\\n  --etcd-certfile=\"/etc/kubernetes/ssl/k8s-worker.pem\" \\\n  --etcd-keyfile=\"/etc/kubernetes/ssl/k8s-worker-key.pem\" \\\n  --iface=\"192.168.1.110\""
           }
         ]
       },

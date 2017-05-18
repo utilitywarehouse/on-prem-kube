@@ -99,7 +99,7 @@ storage:
         worker0-borg.prod.uw.systems
 
 flannel:
-  version: 0.7.1
+  version: 0.6.2
   interface: 192.168.1.110
   etcd_endpoints: https://192.168.1.100:2379
   etcd_cafile: /etc/kubernetes/ssl/ca.pem
