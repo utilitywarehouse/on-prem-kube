@@ -1,0 +1,129 @@
+{
+  "ignition": {
+    "version": "2.0.0",
+    "config": {}
+  },
+  "storage": {
+    "disks": [
+      {
+        "device": "/dev/sda",
+        "wipeTable": true,
+        "partitions": [
+          {
+            "label": "ROOT",
+            "number": 0,
+            "size": 0,
+            "start": 0
+          }
+        ]
+      }
+    ],
+    "filesystems": [
+      {
+        "name": "root",
+        "mount": {
+          "device": "/dev/sda1",
+          "format": "ext4",
+          "create": {
+            "force": true,
+            "options": [
+              "-LROOT"
+            ]
+          }
+        }
+      }
+    ],
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/etc/kubernetes/manifests/kube-proxy.yaml",
+        "contents": {
+          "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-proxy%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-proxy%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20proxy%0A%20%20%20%20-%20--master%3Dhttps%3A%2F%2F192.168.1.100%0A%20%20%20%20-%20--proxy-mode%3Diptables%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20resources%3A%0A%20%20%20%20%20%20requests%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20100m%0A%20%20%20%20%20%20%20%20memory%3A%20100Mi%0A%20%20%20%20%20%20limits%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20100m%0A%20%20%20%20%20%20%20%20memory%3A%20100Mi%0A%20%20%20%20securityContext%3A%0A%20%20%20%20%20%20privileged%3A%20true%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20%20%20name%3A%20%22ssl-certs%22%0A%20%20%20%20%20%20-%20mountPath%3A%20%2Fvar%2Flib%2Fkubelet%2Fkubeconfig%0A%20%20%20%20%20%20%20%20name%3A%20%22kubeconfig%22%0A%20%20%20%20%20%20%20%20readOnly%3A%20true%0A%20%20%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20%20%20%20%20name%3A%20%22etc-kube-ssl%22%0A%20%20%20%20%20%20%20%20readOnly%3A%20true%0A%20%20volumes%3A%0A%20%20%20%20-%20name%3A%20%22ssl-certs%22%0A%20%20%20%20%20%20hostPath%3A%0A%20%20%20%20%20%20%20%20path%3A%20%22%2Fusr%2Fshare%2Fca-certificates%22%0A%20%20%20%20-%20name%3A%20%22kubeconfig%22%0A%20%20%20%20%20%20hostPath%3A%0A%20%20%20%20%20%20%20%20path%3A%20%22%2Fvar%2Flib%2Fkubelet%2Fkubeconfig%22%0A%20%20%20%20-%20name%3A%20%22etc-kube-ssl%22%0A%20%20%20%20%20%20hostPath%3A%0A%20%20%20%20%20%20%20%20path%3A%20%22%2Fetc%2Fkubernetes%2Fssl%22%0A",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/kubernetes/kubeconfig",
+        "contents": {
+          "source": "data:,kind%3A%20Config%0Aclusters%3A%0A-%20name%3A%20local%0A%20%20cluster%3A%0A%20%20%20%20certificate-authority%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20server%3A%20https%3A%2F%2F192.168.1.100%0Ausers%3A%0A-%20name%3A%20kubelet%0A%20%20user%3A%0A%20%20%20%20client-certificate%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-worker.pem%0A%20%20%20%20client-key%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-worker-key.pem%0Acontexts%3A%0A-%20context%3A%0A%20%20%20%20cluster%3A%20local%0A%20%20%20%20user%3A%20kubelet%0A%20%20name%3A%20kubelet-cluster.local%0Acurrent-context%3A%20kubelet-cluster.local%0A",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/prom-text-collectors/machine_role.prom",
+        "contents": {
+          "source": "data:,machine_role%7Brole%3D%22worker%22%7D%201%0A",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/hostname",
+        "contents": {
+          "source": "data:,worker0-borg.prod.uw.systems%0A",
+          "verification": {}
+        },
+        "mode": 420,
+        "user": {},
+        "group": {}
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "name": "flanneld.service",
+        "enable": true,
+        "dropins": [
+          {
+            "name": "20-clct-flannel.conf",
+            "contents": "[Service]\nEnvironment=\"FLANNEL_IMAGE_TAG=v0.7.1\"\nExecStart=\nExecStart=/usr/lib/coreos/flannel-wrapper $FLANNEL_OPTS \\\n  --etcd-endpoints=\"https://192.168.1.100:2379\" \\\n  --etcd-cafile=\"/etc/kubernetes/ssl/ca.pem\" \\\n  --etcd-certfile=\"/etc/kubernetes/ssl/k8s-worker.pem\" \\\n  --etcd-keyfile=\"/etc/kubernetes/ssl/k8s-worker-key.pem\" \\\n  --iface=\"192.168.1.110\""
+          }
+        ]
+      },
+      {
+        "name": "docker.service",
+        "enable": true,
+        "dropins": [
+          {
+            "name": "40-flannel.conf",
+            "contents": "[Unit]\nRequires=flanneld.service\nAfter=flanneld.service\n"
+          }
+        ]
+      },
+      {
+        "name": "flanneld.service",
+        "enable": true,
+        "dropins": [
+          {
+            "name": "10-etcd.conf",
+            "contents": "[Unit]\nRequires=get-ssl.service\nAfter=get-ssl.service\n[Service]\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \\\n  --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \\\n  --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl\"\n"
+          }
+        ]
+      },
+      {
+        "name": "kubelet.service",
+        "enable": true,
+        "contents": "[Unit]\nRequires=docker.service\nAfter=docker.service\n[Service]\nEnvironment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube\nEnvironment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/run/kubelet-pod.uuid \\\n  --volume var-log,kind=host,source=/var/log \\\n  --mount volume=var-log,target=/var/log \\\n  --volume cni-bin,kind=host,source=/opt/cni/bin \\\n  --mount volume=cni-bin,target=/opt/cni/bin \\\n  --volume var-lib-cni,kind=host,source=/var/lib/cni \\\n  --mount volume=var-lib-cni,target=/var/lib/cni \\\n  --volume dns,kind=host,source=/etc/resolv.conf \\\n  --mount volume=dns,target=/etc/resolv.conf\"\nExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests\nExecStartPre=/usr/bin/mkdir -p /var/log/containers\nExecStartPre=/usr/bin/mkdir -p /opt/cni/bin\nExecStartPre=/usr/bin/mkdir -p /var/lib/cni\nExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid\nExecStart=/usr/lib/coreos/kubelet-wrapper \\\n  --kubeconfig=/var/lib/kubelet/kubeconfig \\\n  --require-kubeconfig=true \\\n  --node-labels=role=worker \\\n  --container-runtime=docker \\\n  --network-plugin-dir=/etc/kubernetes/cni/net.d \\\n  --network-plugin=cni \\\n  --cni-bin-dir=/opt/cni/bin \\\n  --cni-conf-dir=/etc/kubernetes/cni/net.d \\\n  --register-node=true \\\n  --allow-privileged=true \\\n  --pod-manifest-path=/etc/kubernetes/manifests \\\n  --cluster_dns=10.3.0.10 \\\n  --cluster_domain=cluster.local \\\n  --eviction-soft=memory.available\u003c1Gi,nodefs.available\u003c2Gi \\\n  --eviction-soft-grace-period=memory.available=1m,nodefs.available=1m \\\n  --eviction-max-pod-grace-period=30 \\\n  --eviction-hard=memory.available\u003c512Mi,nodefs.available\u003c1Gi\nExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid\nRestart=always\nRestartSec=10\n[Install]\nWantedBy=multi-user.target\n"
+      },
+      {
+        "name": "get-ssl.service",
+        "enable": true,
+        "contents": "[Unit]\nDescription=Get ssl artifacts from s3 bucket using IAM role\nAfter=network.target\n[Service]\nExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl\nExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl\nExecStartPre=/bin/sh -c \"until curl -sL http://192.168.1.1:8000; do sleep 2; done\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-worker.tar | tar xv -C /etc/kubernetes/ssl/\"\nRemainAfterExit=yes\nType=oneshot\n"
+      }
+    ]
+  },
+  "networkd": {},
+  "passwd": {}
+}

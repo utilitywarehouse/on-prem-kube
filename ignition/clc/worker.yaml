@@ -1,0 +1,191 @@
+storage:
+  disks:
+  - device: /dev/sda
+    wipe_table: true
+    partitions:
+      - label: ROOT
+  filesystems:
+  - name: root
+    mount:
+      device: "/dev/sda1"
+      format: "ext4"
+      create:
+        force: true
+        options:
+          - "-LROOT"
+  files:
+  - filesystem: root
+    path: /etc/kubernetes/manifests/kube-proxy.yaml
+    mode: 644
+    contents:
+      inline: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: kube-proxy
+          namespace: kube-system
+        spec:
+          hostNetwork: true
+          containers:
+          - name: kube-proxy
+            image: quay.io/coreos/hyperkube:v1.6.2_coreos.0
+            command:
+            - /hyperkube
+            - proxy
+            - --master=https://192.168.1.100
+            - --proxy-mode=iptables
+            - --v=0
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                cpu: 100m
+                memory: 100Mi
+            securityContext:
+              privileged: true
+            volumeMounts:
+              - mountPath: /etc/ssl/certs
+                name: "ssl-certs"
+              - mountPath: /var/lib/kubelet/kubeconfig
+                name: "kubeconfig"
+                readOnly: true
+              - mountPath: /etc/kubernetes/ssl
+                name: "etc-kube-ssl"
+                readOnly: true
+          volumes:
+            - name: "ssl-certs"
+              hostPath:
+                path: "/usr/share/ca-certificates"
+            - name: "kubeconfig"
+              hostPath:
+                path: "/var/lib/kubelet/kubeconfig"
+            - name: "etc-kube-ssl"
+              hostPath:
+                path: "/etc/kubernetes/ssl"
+  - filesystem: root
+    path: /etc/kubernetes/kubeconfig
+    mode: 644
+    contents:
+      inline: |
+        kind: Config
+        clusters:
+        - name: local
+          cluster:
+            certificate-authority: /etc/kubernetes/ssl/ca.pem
+            server: https://192.168.1.100
+        users:
+        - name: kubelet
+          user:
+            client-certificate: /etc/kubernetes/ssl/k8s-worker.pem
+            client-key: /etc/kubernetes/ssl/k8s-worker-key.pem
+        contexts:
+        - context:
+            cluster: local
+            user: kubelet
+          name: kubelet-cluster.local
+        current-context: kubelet-cluster.local
+  - filesystem: root
+    path: /etc/prom-text-collectors/machine_role.prom
+    mode: 644
+    contents:
+      inline: |
+        machine_role{role="worker"} 1
+  - filesystem: root
+    path: /etc/hostname
+    mode: 420
+    contents:
+      inline: |
+        worker0-borg.prod.uw.systems
+
+flannel:
+  version: 0.7.1
+  interface: 192.168.1.110
+  etcd_endpoints: https://192.168.1.100:2379
+  etcd_cafile: /etc/kubernetes/ssl/ca.pem
+  etcd_certfile: /etc/kubernetes/ssl/k8s-worker.pem
+  etcd_keyfile: /etc/kubernetes/ssl/k8s-worker-key.pem
+
+systemd:
+  units:
+  - name: docker.service
+    enable: true
+    dropins:
+      - name: 40-flannel.conf
+        contents: |
+          [Unit]
+          Requires=flanneld.service
+          After=flanneld.service
+  - name: flanneld.service
+    enable: true
+    dropins:
+      - name: 10-etcd.conf
+        contents: |
+          [Unit]
+          Requires=get-ssl.service
+          After=get-ssl.service
+          [Service]
+          Environment="RKT_RUN_ARGS=\
+            --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \
+            --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \
+            --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl"
+  - name: kubelet.service
+    enable: true
+    contents: |
+      [Unit]
+      Requires=docker.service
+      After=docker.service
+      [Service]
+      Environment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
+      Environment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0
+      Environment="RKT_RUN_ARGS=\
+        --uuid-file-save=/var/run/kubelet-pod.uuid \
+        --volume var-log,kind=host,source=/var/log \
+        --mount volume=var-log,target=/var/log \
+        --volume cni-bin,kind=host,source=/opt/cni/bin \
+        --mount volume=cni-bin,target=/opt/cni/bin \
+        --volume var-lib-cni,kind=host,source=/var/lib/cni \
+        --mount volume=var-lib-cni,target=/var/lib/cni \
+        --volume dns,kind=host,source=/etc/resolv.conf \
+        --mount volume=dns,target=/etc/resolv.conf"
+      ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+      ExecStartPre=/usr/bin/mkdir -p /var/log/containers
+      ExecStartPre=/usr/bin/mkdir -p /opt/cni/bin
+      ExecStartPre=/usr/bin/mkdir -p /var/lib/cni
+      ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
+      ExecStart=/usr/lib/coreos/kubelet-wrapper \
+        --kubeconfig=/var/lib/kubelet/kubeconfig \
+        --require-kubeconfig=true \
+        --node-labels=role=worker \
+        --container-runtime=docker \
+        --network-plugin-dir=/etc/kubernetes/cni/net.d \
+        --network-plugin=cni \
+        --cni-bin-dir=/opt/cni/bin \
+        --cni-conf-dir=/etc/kubernetes/cni/net.d \
+        --register-node=true \
+        --allow-privileged=true \
+        --pod-manifest-path=/etc/kubernetes/manifests \
+        --cluster_dns=10.3.0.10 \
+        --cluster_domain=cluster.local \
+        --eviction-soft=memory.available<1Gi,nodefs.available<2Gi \
+        --eviction-soft-grace-period=memory.available=1m,nodefs.available=1m \
+        --eviction-max-pod-grace-period=30 \
+        --eviction-hard=memory.available<512Mi,nodefs.available<1Gi
+      ExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid
+      Restart=always
+      RestartSec=10
+      [Install]
+      WantedBy=multi-user.target
+  - name: get-ssl.service
+    enable: true
+    contents: |
+      [Unit]
+      Description=Get ssl artifacts from s3 bucket using IAM role
+      After=network.target
+      [Service]
+      ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
+      ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
+      ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
+      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-worker.tar | tar xv -C /etc/kubernetes/ssl/"
+      RemainAfterExit=yes
+      Type=oneshot
