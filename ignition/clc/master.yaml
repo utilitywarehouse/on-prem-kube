@@ -285,20 +285,8 @@ etcd:
   peer_cert_file: "/etc/etcd/ssl/k8s-etcd.pem"
   peer_key_file: "/etc/etcd/ssl/k8s-etcd-key.pem"
 
-flannel:
-  version: 0.7.1
-  kube_subnet_mgr: true
-
 systemd:
   units:
-  - name: docker.service
-    enable: true
-    dropins:
-      - name: 40-flannel.conf
-        contents: |
-          [Unit]
-          Requires=flanneld.service
-          After=flanneld.service
   - name: etcd-member.service
     enable: true
     dropins:
@@ -315,26 +303,6 @@ systemd:
           --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \
           --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \
           --mount volume=etc-etcd,target=/etc/etcd"
-  - name: flanneld.service
-    enable: true
-    dropins:
-      - name: 10-etcd.conf
-        contents: |
-          [Unit]
-          Requires=get-ssl.service
-          After=get-ssl.service
-          [Service]
-          Environment="RKT_RUN_ARGS=\
-            --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \
-            --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \
-            --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl"
-          ExecStartPre=/usr/bin/curl \
-              --silent -X PUT \
-              --cacert /etc/kubernetes/ssl/ca.pem \
-              --cert /etc/kubernetes/ssl/k8s-apiserver.pem \
-              --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \
-              -d "value={\"Network\" : \"10.2.0.0/16\", \"Backend\" : {\"Type\" : \"vxlan\"}}" \
-              https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false
   - name: kubelet.service
     enable: true
     contents: |

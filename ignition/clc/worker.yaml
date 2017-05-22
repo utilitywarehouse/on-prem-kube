@@ -98,38 +98,8 @@ storage:
       inline: |
         worker0-borg.prod.uw.systems
 
-flannel:
-  version: 0.7.1
-  kube_subnet_mgr: true
-
 systemd:
   units:
-  - name: docker.service
-    enable: true
-    dropins:
-      - name: 40-flannel.conf
-        contents: |
-          [Unit]
-          Requires=flanneld.service
-          After=flanneld.service
-  - name: flanneld.service
-    enable: true
-    dropins:
-      - name: 10-etcd.conf
-        contents: |
-          [Unit]
-          Requires=get-ssl.service
-          After=get-ssl.service
-          [Service]
-          Environment="RKT_RUN_ARGS=\
-            --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \
-            --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \
-            --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl"
-      - name: 15-kube.conf
-        contents: |
-          [Service]
-          Environment=KUBERNETES_SERVICE_HOST=192.168.1.100
-          Environment=KUBERNETES_SERVICE_PORT=443
   - name: kubelet.service
     enable: true
     contents: |
@@ -175,16 +145,3 @@ systemd:
       RestartSec=10
       [Install]
       WantedBy=multi-user.target
-  - name: get-ssl.service
-    enable: true
-    contents: |
-      [Unit]
-      Description=Get ssl artifacts from s3 bucket using IAM role
-      After=network.target
-      [Service]
-      ExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl
-      ExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl
-      ExecStartPre=/bin/sh -c "until curl -sL http://192.168.1.1:8000; do sleep 2; done"
-      ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-worker.tar | tar xv -C /etc/kubernetes/ssl/"
-      RemainAfterExit=yes
-      Type=oneshot

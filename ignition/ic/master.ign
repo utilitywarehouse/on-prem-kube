@@ -159,26 +159,6 @@
         ]
       },
       {
-        "name": "flanneld.service",
-        "enable": true,
-        "dropins": [
-          {
-            "name": "20-clct-flannel.conf",
-            "contents": "[Service]\nEnvironment=\"FLANNEL_IMAGE_TAG=v0.7.1\"\nExecStart=\nExecStart=/usr/lib/coreos/flannel-wrapper $FLANNEL_OPTS \\\n  --kube-subnet-mgr=true"
-          }
-        ]
-      },
-      {
-        "name": "docker.service",
-        "enable": true,
-        "dropins": [
-          {
-            "name": "40-flannel.conf",
-            "contents": "[Unit]\nRequires=flanneld.service\nAfter=flanneld.service\n"
-          }
-        ]
-      },
-      {
         "name": "etcd-member.service",
         "enable": true,
         "dropins": [
@@ -189,16 +169,6 @@
           {
             "name": "15-custom-options.conf",
             "contents": "[Service]\nExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
-          }
-        ]
-      },
-      {
-        "name": "flanneld.service",
-        "enable": true,
-        "dropins": [
-          {
-            "name": "10-etcd.conf",
-            "contents": "[Unit]\nRequires=get-ssl.service\nAfter=get-ssl.service\n[Service]\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \\\n  --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \\\n  --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl\"\nExecStartPre=/usr/bin/curl \\\n    --silent -X PUT \\\n    --cacert /etc/kubernetes/ssl/ca.pem \\\n    --cert /etc/kubernetes/ssl/k8s-apiserver.pem \\\n    --key /etc/kubernetes/ssl/k8s-apiserver-key.pem \\\n    -d \"value={\\\"Network\\\" : \\\"10.2.0.0/16\\\", \\\"Backend\\\" : {\\\"Type\\\" : \\\"vxlan\\\"}}\" \\\n    https://192.168.1.100:2379/v2/keys/coreos.com/network/config?prevExist=false\n"
           }
         ]
       },
