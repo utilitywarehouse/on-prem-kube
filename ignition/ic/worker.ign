@@ -109,6 +109,10 @@
           {
             "name": "10-etcd.conf",
             "contents": "[Unit]\nRequires=get-ssl.service\nAfter=get-ssl.service\n[Service]\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \\\n  --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \\\n  --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl\"\n"
+          },
+          {
+            "name": "15-kube.conf",
+            "contents": "[Service]\nEnvironment=KUBERNETES_SERVICE_HOST=192.168.1.100\nEnvironment=KUBERNETES_SERVICE_PORT=443\n"
           }
         ]
       },

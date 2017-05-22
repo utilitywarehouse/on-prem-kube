@@ -125,6 +125,11 @@ systemd:
             --uuid-file-save=/var/lib/coreos/flannel-wrapper.uuid \
             --volume etc-kubernetes-ssl,kind=host,source=/etc/kubernetes/ssl,readOnly=true \
             --mount volume=etc-kubernetes-ssl,target=/etc/kubernetes/ssl"
+      - name: 15-kube.conf
+        contents: |
+          [Service]
+          Environment=KUBERNETES_SERVICE_HOST=192.168.1.100
+          Environment=KUBERNETES_SERVICE_PORT=443
   - name: kubelet.service
     enable: true
     contents: |
