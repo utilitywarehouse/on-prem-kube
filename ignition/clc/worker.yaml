@@ -134,8 +134,6 @@ systemd:
     enable: true
     contents: |
       [Unit]
-      Requires=docker.service
-      After=docker.service
       [Service]
       Environment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
       Environment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0
