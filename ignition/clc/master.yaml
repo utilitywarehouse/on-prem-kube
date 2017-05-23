@@ -334,10 +334,10 @@ systemd:
         --register-node=true \
         --register-schedulable=false \
         --container-runtime=docker \
-        --network-plugin-dir=/etc/kubernetes/cni/net.d \
+        --network-plugin-dir=/etc/cni/net.d \
         --network-plugin=cni \
         --cni-bin-dir=/opt/cni/bin \
-        --cni-conf-dir=/etc/kubernetes/cni/net.d \
+        --cni-conf-dir=/etc/cni/net.d \
         --allow-privileged=true \
         --pod-manifest-path=/etc/kubernetes/manifests \
         --cluster-dns=10.3.0.10 \
