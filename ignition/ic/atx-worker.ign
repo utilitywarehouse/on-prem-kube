@@ -6,7 +6,7 @@
   "storage": {
     "disks": [
       {
-        "device": "/dev/nvme0",
+        "device": "/dev/nvme0n1",
         "wipeTable": true,
         "partitions": [
           {
@@ -22,7 +22,7 @@
       {
         "name": "root",
         "mount": {
-          "device": "/dev/nvme0n1",
+          "device": "/dev/nvme0n1p1",
           "format": "ext4",
           "create": {
             "force": true,

@@ -1,13 +1,13 @@
 storage:
   disks:
-  - device: /dev/nvme0
+  - device: /dev/nvme0n1
     wipe_table: true
     partitions:
       - label: ROOT
   filesystems:
   - name: root
     mount:
-      device: "/dev/nvme0n1"
+      device: "/dev/nvme0n1p1"
       format: "ext4"
       create:
         force: true
