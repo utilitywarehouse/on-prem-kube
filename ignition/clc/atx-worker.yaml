@@ -104,6 +104,8 @@ systemd:
     enable: true
     contents: |
       [Unit]
+      After=get-ssl.service
+      Requires=get-ssl.service
       [Service]
       Environment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube
       Environment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0
@@ -158,3 +160,5 @@ systemd:
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-worker.tar | tar xv -C /etc/kubernetes/ssl/"
       RemainAfterExit=yes
       Type=oneshot
+      [Install]
+      WantedBy=multi-user.target

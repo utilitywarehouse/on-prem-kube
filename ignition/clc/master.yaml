@@ -374,3 +374,5 @@ systemd:
       ExecStart=/bin/sh -c "curl -sL http://192.168.1.1:8000/certs/k8s-apiserver.tar | tar xv -C /etc/kubernetes/ssl/"
       RemainAfterExit=yes
       Type=oneshot
+      [Install]
+      WantedBy=multi-user.target
