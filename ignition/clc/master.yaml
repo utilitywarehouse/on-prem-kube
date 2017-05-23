@@ -303,6 +303,12 @@ systemd:
           --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \
           --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \
           --mount volume=etc-etcd,target=/etc/etcd"
+  - name: docker.service
+    enable: true
+    contents: |
+      [Service]
+      EnvironmentFile=/run/flannel/subnet.env
+      ExecStart=docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}
   - name: kubelet.service
     enable: true
     contents: |
