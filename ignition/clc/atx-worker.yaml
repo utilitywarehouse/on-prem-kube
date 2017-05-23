@@ -96,7 +96,7 @@ storage:
     mode: 420
     contents:
       inline: |
-        worker0-borg.prod.uw.systems
+        worker0-atx-borg.prod.uw.systems
 
 systemd:
   units:

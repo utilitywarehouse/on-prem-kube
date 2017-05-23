@@ -71,7 +71,7 @@
         "filesystem": "root",
         "path": "/etc/hostname",
         "contents": {
-          "source": "data:,worker0-borg.prod.uw.systems%0A",
+          "source": "data:,worker0-atx-borg.prod.uw.systems%0A",
           "verification": {}
         },
         "mode": 420,
