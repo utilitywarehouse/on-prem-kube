@@ -83,11 +83,6 @@
   "systemd": {
     "units": [
       {
-        "name": "docker.service",
-        "enable": true,
-        "contents": "[Service]\nEnvironmentFile=/run/flannel/subnet.env\nExecStart=docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}\n"
-      },
-      {
         "name": "kubelet.service",
         "enable": true,
         "contents": "[Unit]\nAfter=get-ssl.service\nRequires=get-ssl.service\n[Service]\nEnvironment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube\nEnvironment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/run/kubelet-pod.uuid \\\n  --volume var-log,kind=host,source=/var/log \\\n  --mount volume=var-log,target=/var/log \\\n  --volume cni-bin,kind=host,source=/opt/cni/bin \\\n  --mount volume=cni-bin,target=/opt/cni/bin \\\n  --volume var-lib-cni,kind=host,source=/var/lib/cni \\\n  --mount volume=var-lib-cni,target=/var/lib/cni \\\n  --volume dns,kind=host,source=/etc/resolv.conf \\\n  --mount volume=dns,target=/etc/resolv.conf\"\nExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests\nExecStartPre=/usr/bin/mkdir -p /var/log/containers\nExecStartPre=/usr/bin/mkdir -p /opt/cni/bin\nExecStartPre=/usr/bin/mkdir -p /var/lib/cni\nExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid\nExecStart=/usr/lib/coreos/kubelet-wrapper \\\n  --kubeconfig=/etc/kubernetes/kubeconfig \\\n  --require-kubeconfig=true \\\n  --node-labels=role=worker \\\n  --container-runtime=docker \\\n  --network-plugin-dir=/etc/cni/net.d \\\n  --network-plugin=cni \\\n  --cni-bin-dir=/opt/cni/bin \\\n  --cni-conf-dir=/etc/cni/net.d \\\n  --register-node=true \\\n  --allow-privileged=true \\\n  --pod-manifest-path=/etc/kubernetes/manifests \\\n  --cluster_dns=10.3.0.10 \\\n  --cluster_domain=cluster.local \\\n  --eviction-soft=memory.available\u003c1Gi,nodefs.available\u003c2Gi \\\n  --eviction-soft-grace-period=memory.available=1m,nodefs.available=1m \\\n  --eviction-max-pod-grace-period=30 \\\n  --eviction-hard=memory.available\u003c512Mi,nodefs.available\u003c1Gi\nExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid\nRestart=always\nRestartSec=10\n[Install]\nWantedBy=multi-user.target\n"

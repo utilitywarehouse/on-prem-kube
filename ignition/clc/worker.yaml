@@ -100,12 +100,6 @@ storage:
 
 systemd:
   units:
-  - name: docker.service
-    enable: true
-    contents: |
-      [Service]
-      EnvironmentFile=/run/flannel/subnet.env
-      ExecStart=docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}
   - name: kubelet.service
     enable: true
     contents: |
