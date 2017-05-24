@@ -32,6 +32,7 @@ storage:
             command:
             - /hyperkube
             - proxy
+            - --kubeconfig=/etc/kubernetes/kubeconfig
             - --master=https://192.168.1.100
             - --proxy-mode=iptables
             - --v=0
@@ -47,7 +48,7 @@ storage:
             volumeMounts:
               - mountPath: /etc/ssl/certs
                 name: "ssl-certs"
-              - mountPath: /var/lib/kubelet/kubeconfig
+              - mountPath: /etc/kubernetes/kubeconfig
                 name: "kubeconfig"
                 readOnly: true
               - mountPath: /etc/kubernetes/ssl
@@ -59,7 +60,7 @@ storage:
                 path: "/usr/share/ca-certificates"
             - name: "kubeconfig"
               hostPath:
-                path: "/var/lib/kubelet/kubeconfig"
+                path: "/etc/kubernetes/kubeconfig"
             - name: "etc-kube-ssl"
               hostPath:
                 path: "/etc/kubernetes/ssl"
