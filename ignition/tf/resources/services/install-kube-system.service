@@ -1,0 +1,10 @@
+[Unit]
+Requires=kubelet.service docker.service
+After=kubelet.service docker.service
+[Service]
+Type=simple
+StartLimitInterval=0
+Restart=on-failure
+RestartSec=10
+ExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version
+ExecStart=/opt/bin/install-kube-system

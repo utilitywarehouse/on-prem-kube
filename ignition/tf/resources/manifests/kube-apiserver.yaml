@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: kube-apiserver
+    image: ${hyperkube_image}
+    command:
+    - /hyperkube
+    - apiserver
+    - --bind-address=0.0.0.0
+    - --etcd-servers=https://192.168.1.100:2379
+    - --etcd-cafile=/etc/kubernetes/ssl/ca.pem
+    - --etcd-certfile=/etc/kubernetes/ssl/k8s-apiserver.pem
+    - --etcd-keyfile=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+    - --allow-privileged=true
+    - --service-cluster-ip-range=10.3.0.0/24
+    - --secure-port=443
+    - --advertise-address=192.168.1.100
+    - --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota
+    - --tls-cert-file=/etc/kubernetes/ssl/k8s-apiserver.pem
+    - --tls-private-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+    - --client-ca-file=/etc/kubernetes/ssl/ca.pem
+    - --service-account-key-file=/etc/kubernetes/ssl/k8s-apiserver-key.pem
+    - --service-account-lookup=true
+    - --runtime-config=extensions/v1beta1=true,extensions/v1beta1/deployments=true,extensions/v1beta1/daemonsets=true,extensions/v1beta1/networkpolicies=true,extensions/v1beta1/thirdpartyresources=true,rbac.authorization.k8s.io/v1beta1=true,batch/v2alpha1=true
+    - --oidc-issuer-url=https://accounts.google.com
+    - --oidc-username-claim=email
+    - --oidc-client-id=524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com
+    - --authorization-mode=RBAC
+    - --apiserver-count=1
+    - --audit-log-path=/dev/stdout
+    - --storage-backend=etcd3
+    - --storage-media-type=application/json
+    - --v=0
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        port: 8080
+        path: /healthz
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    ports:
+    - containerPort: 443
+      hostPort: 443
+      name: https
+    - containerPort: 8080
+      hostPort: 8080
+      name: local
+    volumeMounts:
+    - mountPath: /etc/kubernetes/ssl
+      name: ssl-certs-kubernetes
+      readOnly: true
+    - mountPath: /etc/ssl/certs
+      name: ssl-certs-host
+      readOnly: true
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/ssl
+    name: ssl-certs-kubernetes
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: ssl-certs-host

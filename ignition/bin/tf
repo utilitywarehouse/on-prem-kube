@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+TF_VER="0.9.5"
+
+repo_base_path="$(git rev-parse --show-toplevel)"
+component_relative_path="${PWD#$repo_base_path/}"
+
+exec docker run --rm -ti \
+  -v "${repo_base_path}":/data \
+  -w "/data/${component_relative_path}/tf" \
+  -e TF_VAR_date="${DATE:-$(date +%D)}" \
+  -e TF_VAR_component="${TF_VAR_component}" \
+  hashicorp/terraform:${TF_VER} "$@"
