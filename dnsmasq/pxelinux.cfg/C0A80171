@@ -8,4 +8,4 @@ label coreos
   menu default
   kernel coreos_production_pxe.vmlinuz
   initrd coreos_production_pxe_image.cpio.gz
-  append root=/dev/sda1 coreos.first_boot=1 coreos.config.url=https://raw.githubusercontent.com/utilitywarehouse/on-prem-kube/master/ignition/ic/worker.ign sshkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5OOYqgvQMxnDnSQtMNNLl9JtIx1cdVXoiQ3+GXP0oZ gangel@uw"
+  append root=/dev/sda1 coreos.first_boot=1 coreos.config.url=https://raw.githubusercontent.com/utilitywarehouse/on-prem-kube/master/ignition/ic/worker3.ign sshkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN5OOYqgvQMxnDnSQtMNNLl9JtIx1cdVXoiQ3+GXP0oZ gangel@uw"
