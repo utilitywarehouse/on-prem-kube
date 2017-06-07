@@ -17,9 +17,12 @@ plan:
 	$(TF) plan $(ARGS)
 
 apply:
-	-rm saved-plan
-	$(TF) plan -out=saved-plan $(ARGS)
-	$(TF) apply $(ARGS) saved-plan
+	$(TF) apply $(ARGS)
 
 output:
-	$(TF) output
+	$(TF) output -json master       | jq '.value    | fromjson | .' >ic/master.ign
+	$(TF) output -json dell-workers | jq '.value[0] | fromjson | .' >ic/worker0.ign
+	$(TF) output -json dell-workers | jq '.value[1] | fromjson | .' >ic/worker1.ign
+	$(TF) output -json dell-workers | jq '.value[2] | fromjson | .' >ic/worker2.ign
+	$(TF) output -json dell-workers | jq '.value[3] | fromjson | .' >ic/worker3.ign
+	$(TF) output -json atx-workers  | jq '.value[0] | fromjson | .' >ic/atx-worker0.ign

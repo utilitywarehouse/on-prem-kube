@@ -1,0 +1,100 @@
+{
+  "ignition": {
+    "version": "2.0.0",
+    "config": {}
+  },
+  "storage": {
+    "disks": [
+      {
+        "device": "/dev/sda",
+        "wipeTable": true,
+        "partitions": [
+          {
+            "label": "ROOT",
+            "number": 0,
+            "size": 0,
+            "start": 0
+          }
+        ]
+      }
+    ],
+    "filesystems": [
+      {
+        "name": "root",
+        "mount": {
+          "device": "/dev/sda1",
+          "format": "ext4",
+          "create": {
+            "force": true,
+            "options": [
+              "-L",
+              "ROOT"
+            ]
+          }
+        }
+      }
+    ],
+    "files": [
+      {
+        "filesystem": "root",
+        "path": "/etc/kubernetes/manifests/kube-proxy.yaml",
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtcHJveHkKICBuYW1lc3BhY2U6IGt1YmUtc3lzdGVtCnNwZWM6CiAgaG9zdE5ldHdvcms6IHRydWUKICBjb250YWluZXJzOgogIC0gbmFtZToga3ViZS1wcm94eQogICAgaW1hZ2U6IHF1YXkuaW8vY29yZW9zL2h5cGVya3ViZTp2MS42LjJfY29yZW9zLjAKICAgIGNvbW1hbmQ6CiAgICAtIC9oeXBlcmt1YmUKICAgIC0gcHJveHkKICAgIC0gLS1rdWJlY29uZmlnPS9ldGMva3ViZXJuZXRlcy9rdWJlY29uZmlnCiAgICAtIC0tbWFzdGVyPWh0dHBzOi8vMTkyLjE2OC4xLjEwMAogICAgLSAtLXByb3h5LW1vZGU9aXB0YWJsZXMKICAgIC0gLS12PTAKICAgIHJlc291cmNlczoKICAgICAgcmVxdWVzdHM6CiAgICAgICAgY3B1OiAxMDBtCiAgICAgICAgbWVtb3J5OiAxMDBNaQogICAgICBsaW1pdHM6CiAgICAgICAgY3B1OiAxMDBtCiAgICAgICAgbWVtb3J5OiAxMDBNaQogICAgc2VjdXJpdHlDb250ZXh0OgogICAgICBwcml2aWxlZ2VkOiB0cnVlCiAgICB2b2x1bWVNb3VudHM6CiAgICAgIC0gbW91bnRQYXRoOiAvZXRjL3NzbC9jZXJ0cwogICAgICAgIG5hbWU6ICJzc2wtY2VydHMiCiAgICAgIC0gbW91bnRQYXRoOiAvZXRjL2t1YmVybmV0ZXMva3ViZWNvbmZpZwogICAgICAgIG5hbWU6ICJrdWJlY29uZmlnIgogICAgICAgIHJlYWRPbmx5OiB0cnVlCiAgICAgIC0gbW91bnRQYXRoOiAvZXRjL2t1YmVybmV0ZXMvc3NsCiAgICAgICAgbmFtZTogImV0Yy1rdWJlLXNzbCIKICAgICAgICByZWFkT25seTogdHJ1ZQogIHZvbHVtZXM6CiAgICAtIG5hbWU6ICJzc2wtY2VydHMiCiAgICAgIGhvc3RQYXRoOgogICAgICAgIHBhdGg6ICIvdXNyL3NoYXJlL2NhLWNlcnRpZmljYXRlcyIKICAgIC0gbmFtZTogImt1YmVjb25maWciCiAgICAgIGhvc3RQYXRoOgogICAgICAgIHBhdGg6ICIvZXRjL2t1YmVybmV0ZXMva3ViZWNvbmZpZyIKICAgIC0gbmFtZTogImV0Yy1rdWJlLXNzbCIKICAgICAgaG9zdFBhdGg6CiAgICAgICAgcGF0aDogIi9ldGMva3ViZXJuZXRlcy9zc2wiCg==",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/kubernetes/kubeconfig",
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,a2luZDogQ29uZmlnCmNsdXN0ZXJzOgotIG5hbWU6IGxvY2FsCiAgY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eTogL2V0Yy9rdWJlcm5ldGVzL3NzbC9jYS5wZW0KICAgIHNlcnZlcjogaHR0cHM6Ly8xOTIuMTY4LjEuMTAwCnVzZXJzOgotIG5hbWU6IGt1YmVsZXQKICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlOiAvZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy13b3JrZXIucGVtCiAgICBjbGllbnQta2V5OiAvZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy13b3JrZXIta2V5LnBlbQpjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogbG9jYWwKICAgIHVzZXI6IGt1YmVsZXQKICBuYW1lOiBrdWJlbGV0LWNsdXN0ZXIubG9jYWwKY3VycmVudC1jb250ZXh0OiBrdWJlbGV0LWNsdXN0ZXIubG9jYWwK",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/prom-text-collectors/machine_role.prom",
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,bWFjaGluZV9yb2xle3JvbGU9IndvcmtlciJ9IDE=",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/etc/hostname",
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,d29ya2VyMy1ib3JnLnByb2QudXcuc3lzdGVtcw==",
+          "verification": {}
+        },
+        "mode": 420,
+        "user": {},
+        "group": {}
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "name": "kubelet.service",
+        "enable": true,
+        "contents": "[Unit]\nAfter=get-ssl.service\nRequires=get-ssl.service\n[Service]\nEnvironment=KUBELET_IMAGE_URL=quay.io/coreos/hyperkube\nEnvironment=KUBELET_IMAGE_TAG=v1.6.2_coreos.0\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/run/kubelet-pod.uuid \\\n  --volume var-log,kind=host,source=/var/log \\\n  --mount volume=var-log,target=/var/log \\\n  --volume cni-bin,kind=host,source=/opt/cni/bin \\\n  --mount volume=cni-bin,target=/opt/cni/bin \\\n  --volume var-lib-cni,kind=host,source=/var/lib/cni \\\n  --mount volume=var-lib-cni,target=/var/lib/cni \\\n  --volume etc-cni-netd,kind=host,source=/etc/cni/net.d \\\n  --mount volume=etc-cni-netd,target=/etc/cni/net.d \\\n  --volume dns,kind=host,source=/etc/resolv.conf \\\n  --mount volume=dns,target=/etc/resolv.conf\"\nExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests\nExecStartPre=/usr/bin/mkdir -p /var/log/containers\nExecStartPre=/usr/bin/mkdir -p /opt/cni/bin\nExecStartPre=/usr/bin/mkdir -p /var/lib/cni\nExecStartPre=/usr/bin/mkdir -p /etc/cni/net.d\nExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid\nExecStart=/usr/lib/coreos/kubelet-wrapper \\\n  --require-kubeconfig=true \\\n  --kubeconfig=/etc/kubernetes/kubeconfig \\\n  --node-labels=role=worker \\\n  --container-runtime=docker \\\n  --network-plugin-dir=/etc/cni/net.d \\\n  --network-plugin=cni \\\n  --cni-bin-dir=/opt/cni/bin \\\n  --cni-conf-dir=/etc/cni/net.d \\\n  --register-node=true \\\n  --allow-privileged=true \\\n  --pod-manifest-path=/etc/kubernetes/manifests \\\n  --cluster_dns=10.3.0.10 \\\n  --cluster_domain=cluster.local \\\n  --eviction-soft=memory.available<1Gi,nodefs.available<2Gi \\\n  --eviction-soft-grace-period=memory.available=1m,nodefs.available=1m \\\n  --eviction-max-pod-grace-period=30 \\\n  --eviction-hard=memory.available<512Mi,nodefs.available<1Gi\nExecStop=-/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid\nRestart=always\nRestartSec=10\n[Install]\nWantedBy=multi-user.target\n"
+      },
+      {
+        "name": "get-ssl.service",
+        "enable": true,
+        "contents": "[Unit]\nDescription=Get ssl artifacts from s3 bucket using IAM role\nAfter=network.target\n[Service]\nExecStartPre=-/usr/bin/mkdir -p /etc/etcd/ssl\nExecStartPre=-/usr/bin/mkdir -p /etc/kubernetes/ssl\nExecStartPre=/bin/sh -c \"until curl -sL http://192.168.1.1:8000; do sleep 2; done\"\nExecStart=/bin/sh -c \"curl -sL http://192.168.1.1:8000/certs/k8s-worker.tar | tar xv -C /etc/kubernetes/ssl/\"\nRemainAfterExit=yes\nType=oneshot\n[Install]\nWantedBy=multi-user.target\n"
+      }
+    ]
+  },
+  "networkd": {},
+  "passwd": {}
+}

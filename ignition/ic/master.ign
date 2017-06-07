@@ -27,7 +27,8 @@
           "create": {
             "force": true,
             "options": [
-              "-LROOT"
+              "-L",
+              "ROOT"
             ]
           }
         }
@@ -38,7 +39,7 @@
         "filesystem": "root",
         "path": "/etc/kubernetes/manifests/kube-apiserver.yaml",
         "contents": {
-          "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-apiserver%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-apiserver%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20apiserver%0A%20%20%20%20-%20--bind-address%3D0.0.0.0%0A%20%20%20%20-%20--etcd-servers%3Dhttps%3A%2F%2F192.168.1.100%3A2379%0A%20%20%20%20-%20--etcd-cafile%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--etcd-certfile%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20-%20--etcd-keyfile%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--allow-privileged%3Dtrue%0A%20%20%20%20-%20--service-cluster-ip-range%3D10.3.0.0%2F24%0A%20%20%20%20-%20--secure-port%3D443%0A%20%20%20%20-%20--advertise-address%3D192.168.1.100%0A%20%20%20%20-%20--admission-control%3DNamespaceLifecycle%2CLimitRanger%2CServiceAccount%2CResourceQuota%0A%20%20%20%20-%20--tls-cert-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20-%20--tls-private-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--client-ca-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--service-account-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--service-account-lookup%3Dtrue%0A%20%20%20%20-%20--runtime-config%3Dextensions%2Fv1beta1%3Dtrue%2Cextensions%2Fv1beta1%2Fdeployments%3Dtrue%2Cextensions%2Fv1beta1%2Fdaemonsets%3Dtrue%2Cextensions%2Fv1beta1%2Fnetworkpolicies%3Dtrue%2Cextensions%2Fv1beta1%2Fthirdpartyresources%3Dtrue%2Crbac.authorization.k8s.io%2Fv1beta1%3Dtrue%2Cbatch%2Fv2alpha1%3Dtrue%0A%20%20%20%20-%20--oidc-issuer-url%3Dhttps%3A%2F%2Faccounts.google.com%0A%20%20%20%20-%20--oidc-username-claim%3Demail%0A%20%20%20%20-%20--oidc-client-id%3D524243600836-hjur3brojhltt8cgdtqis07ui8pf597t.apps.googleusercontent.com%0A%20%20%20%20-%20--authorization-mode%3DRBAC%0A%20%20%20%20-%20--apiserver-count%3D1%0A%20%20%20%20-%20--audit-log-path%3D%2Fdev%2Fstdout%0A%20%20%20%20-%20--storage-backend%3Detcd3%0A%20%20%20%20-%20--storage-media-type%3Dapplication%2Fjson%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20port%3A%208080%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A%20%20%20%20ports%3A%0A%20%20%20%20-%20containerPort%3A%20443%0A%20%20%20%20%20%20hostPort%3A%20443%0A%20%20%20%20%20%20name%3A%20https%0A%20%20%20%20-%20containerPort%3A%208080%0A%20%20%20%20%20%20hostPort%3A%208080%0A%20%20%20%20%20%20name%3A%20local%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
+          "source": "data:text/plain;charset=utf-8;base64,YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtYXBpc2VydmVyCiAgbmFtZXNwYWNlOiBrdWJlLXN5c3RlbQpzcGVjOgogIGhvc3ROZXR3b3JrOiB0cnVlCiAgY29udGFpbmVyczoKICAtIG5hbWU6IGt1YmUtYXBpc2VydmVyCiAgICBpbWFnZTogcXVheS5pby9jb3Jlb3MvaHlwZXJrdWJlOnYxLjYuMl9jb3Jlb3MuMAogICAgY29tbWFuZDoKICAgIC0gL2h5cGVya3ViZQogICAgLSBhcGlzZXJ2ZXIKICAgIC0gLS1iaW5kLWFkZHJlc3M9MC4wLjAuMAogICAgLSAtLWV0Y2Qtc2VydmVycz1odHRwczovLzE5Mi4xNjguMS4xMDA6MjM3OQogICAgLSAtLWV0Y2QtY2FmaWxlPS9ldGMva3ViZXJuZXRlcy9zc2wvY2EucGVtCiAgICAtIC0tZXRjZC1jZXJ0ZmlsZT0vZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy1hcGlzZXJ2ZXIucGVtCiAgICAtIC0tZXRjZC1rZXlmaWxlPS9ldGMva3ViZXJuZXRlcy9zc2wvazhzLWFwaXNlcnZlci1rZXkucGVtCiAgICAtIC0tYWxsb3ctcHJpdmlsZWdlZD10cnVlCiAgICAtIC0tc2VydmljZS1jbHVzdGVyLWlwLXJhbmdlPTEwLjMuMC4wLzI0CiAgICAtIC0tc2VjdXJlLXBvcnQ9NDQzCiAgICAtIC0tYWR2ZXJ0aXNlLWFkZHJlc3M9MTkyLjE2OC4xLjEwMAogICAgLSAtLWFkbWlzc2lvbi1jb250cm9sPU5hbWVzcGFjZUxpZmVjeWNsZSxMaW1pdFJhbmdlcixTZXJ2aWNlQWNjb3VudCxSZXNvdXJjZVF1b3RhCiAgICAtIC0tdGxzLWNlcnQtZmlsZT0vZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy1hcGlzZXJ2ZXIucGVtCiAgICAtIC0tdGxzLXByaXZhdGUta2V5LWZpbGU9L2V0Yy9rdWJlcm5ldGVzL3NzbC9rOHMtYXBpc2VydmVyLWtleS5wZW0KICAgIC0gLS1jbGllbnQtY2EtZmlsZT0vZXRjL2t1YmVybmV0ZXMvc3NsL2NhLnBlbQogICAgLSAtLXNlcnZpY2UtYWNjb3VudC1rZXktZmlsZT0vZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy1hcGlzZXJ2ZXIta2V5LnBlbQogICAgLSAtLXNlcnZpY2UtYWNjb3VudC1sb29rdXA9dHJ1ZQogICAgLSAtLXJ1bnRpbWUtY29uZmlnPWV4dGVuc2lvbnMvdjFiZXRhMT10cnVlLGV4dGVuc2lvbnMvdjFiZXRhMS9kZXBsb3ltZW50cz10cnVlLGV4dGVuc2lvbnMvdjFiZXRhMS9kYWVtb25zZXRzPXRydWUsZXh0ZW5zaW9ucy92MWJldGExL25ldHdvcmtwb2xpY2llcz10cnVlLGV4dGVuc2lvbnMvdjFiZXRhMS90aGlyZHBhcnR5cmVzb3VyY2VzPXRydWUscmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MWJldGExPXRydWUsYmF0Y2gvdjJhbHBoYTE9dHJ1ZQogICAgLSAtLW9pZGMtaXNzdWVyLXVybD1odHRwczovL2FjY291bnRzLmdvb2dsZS5jb20KICAgIC0gLS1vaWRjLXVzZXJuYW1lLWNsYWltPWVtYWlsCiAgICAtIC0tb2lkYy1jbGllbnQtaWQ9NTI0MjQzNjAwODM2LWhqdXIzYnJvamhsdHQ4Y2dkdHFpczA3dWk4cGY1OTd0LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tCiAgICAtIC0tYXV0aG9yaXphdGlvbi1tb2RlPVJCQUMKICAgIC0gLS1hcGlzZXJ2ZXItY291bnQ9MQogICAgLSAtLWF1ZGl0LWxvZy1wYXRoPS9kZXYvc3Rkb3V0CiAgICAtIC0tc3RvcmFnZS1iYWNrZW5kPWV0Y2QzCiAgICAtIC0tc3RvcmFnZS1tZWRpYS10eXBlPWFwcGxpY2F0aW9uL2pzb24KICAgIC0gLS12PTAKICAgIGxpdmVuZXNzUHJvYmU6CiAgICAgIGh0dHBHZXQ6CiAgICAgICAgaG9zdDogMTI3LjAuMC4xCiAgICAgICAgcG9ydDogODA4MAogICAgICAgIHBhdGg6IC9oZWFsdGh6CiAgICAgIGluaXRpYWxEZWxheVNlY29uZHM6IDE1CiAgICAgIHRpbWVvdXRTZWNvbmRzOiAxNQogICAgcG9ydHM6CiAgICAtIGNvbnRhaW5lclBvcnQ6IDQ0MwogICAgICBob3N0UG9ydDogNDQzCiAgICAgIG5hbWU6IGh0dHBzCiAgICAtIGNvbnRhaW5lclBvcnQ6IDgwODAKICAgICAgaG9zdFBvcnQ6IDgwODAKICAgICAgbmFtZTogbG9jYWwKICAgIHZvbHVtZU1vdW50czoKICAgIC0gbW91bnRQYXRoOiAvZXRjL2t1YmVybmV0ZXMvc3NsCiAgICAgIG5hbWU6IHNzbC1jZXJ0cy1rdWJlcm5ldGVzCiAgICAgIHJlYWRPbmx5OiB0cnVlCiAgICAtIG1vdW50UGF0aDogL2V0Yy9zc2wvY2VydHMKICAgICAgbmFtZTogc3NsLWNlcnRzLWhvc3QKICAgICAgcmVhZE9ubHk6IHRydWUKICB2b2x1bWVzOgogIC0gaG9zdFBhdGg6CiAgICAgIHBhdGg6IC9ldGMva3ViZXJuZXRlcy9zc2wKICAgIG5hbWU6IHNzbC1jZXJ0cy1rdWJlcm5ldGVzCiAgLSBob3N0UGF0aDoKICAgICAgcGF0aDogL3Vzci9zaGFyZS9jYS1jZXJ0aWZpY2F0ZXMKICAgIG5hbWU6IHNzbC1jZXJ0cy1ob3N0Cg==",
           "verification": {}
         },
         "mode": 644,
@@ -49,7 +50,7 @@
         "filesystem": "root",
         "path": "/etc/kubernetes/manifests/kube-proxy.yaml",
         "contents": {
-          "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-proxy%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-proxy%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20proxy%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--proxy-mode%3Diptables%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20securityContext%3A%0A%20%20%20%20%20%20privileged%3A%20true%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
+          "source": "data:text/plain;charset=utf-8;base64,YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtcHJveHkKICBuYW1lc3BhY2U6IGt1YmUtc3lzdGVtCnNwZWM6CiAgaG9zdE5ldHdvcms6IHRydWUKICBjb250YWluZXJzOgogIC0gbmFtZToga3ViZS1wcm94eQogICAgaW1hZ2U6IHF1YXkuaW8vY29yZW9zL2h5cGVya3ViZTp2MS42LjJfY29yZW9zLjAKICAgIGNvbW1hbmQ6CiAgICAtIC9oeXBlcmt1YmUKICAgIC0gcHJveHkKICAgIC0gLS1tYXN0ZXI9aHR0cDovLzEyNy4wLjAuMTo4MDgwCiAgICAtIC0tcHJveHktbW9kZT1pcHRhYmxlcwogICAgLSAtLXY9MAogICAgc2VjdXJpdHlDb250ZXh0OgogICAgICBwcml2aWxlZ2VkOiB0cnVlCiAgICB2b2x1bWVNb3VudHM6CiAgICAtIG1vdW50UGF0aDogL2V0Yy9zc2wvY2VydHMKICAgICAgbmFtZTogc3NsLWNlcnRzLWhvc3QKICAgICAgcmVhZE9ubHk6IHRydWUKICB2b2x1bWVzOgogIC0gaG9zdFBhdGg6CiAgICAgIHBhdGg6IC91c3Ivc2hhcmUvY2EtY2VydGlmaWNhdGVzCiAgICBuYW1lOiBzc2wtY2VydHMtaG9zdAo=",
           "verification": {}
         },
         "mode": 644,
@@ -60,7 +61,7 @@
         "filesystem": "root",
         "path": "/etc/kubernetes/manifests/kube-controller-manager.yaml",
         "contents": {
-          "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-controller-manager%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-controller-manager%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20controller-manager%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--leader-elect%3Dtrue%0A%20%20%20%20-%20--service-account-private-key-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0A%20%20%20%20-%20--root-ca-file%3D%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20-%20--configure-cloud-routes%3Dfalse%0A%20%20%20%20-%20--allocate-node-cidrs%3Dtrue%0A%20%20%20%20-%20--cluster-cidr%3D10.2.0.0%2F16%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20resources%3A%0A%20%20%20%20%20%20requests%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20200m%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20%20%20port%3A%2010252%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A%20%20%20%20volumeMounts%3A%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20%20%20-%20mountPath%3A%20%2Fetc%2Fssl%2Fcerts%0A%20%20%20%20%20%20name%3A%20ssl-certs-host%0A%20%20%20%20%20%20readOnly%3A%20true%0A%20%20hostNetwork%3A%20true%0A%20%20volumes%3A%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fetc%2Fkubernetes%2Fssl%0A%20%20%20%20name%3A%20ssl-certs-kubernetes%0A%20%20-%20hostPath%3A%0A%20%20%20%20%20%20path%3A%20%2Fusr%2Fshare%2Fca-certificates%0A%20%20%20%20name%3A%20ssl-certs-host%0A",
+          "source": "data:text/plain;charset=utf-8;base64,YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtY29udHJvbGxlci1tYW5hZ2VyCiAgbmFtZXNwYWNlOiBrdWJlLXN5c3RlbQpzcGVjOgogIGNvbnRhaW5lcnM6CiAgLSBuYW1lOiBrdWJlLWNvbnRyb2xsZXItbWFuYWdlcgogICAgaW1hZ2U6IHF1YXkuaW8vY29yZW9zL2h5cGVya3ViZTp2MS42LjJfY29yZW9zLjAKICAgIGNvbW1hbmQ6CiAgICAtIC9oeXBlcmt1YmUKICAgIC0gY29udHJvbGxlci1tYW5hZ2VyCiAgICAtIC0tbWFzdGVyPWh0dHA6Ly8xMjcuMC4wLjE6ODA4MAogICAgLSAtLWxlYWRlci1lbGVjdD10cnVlCiAgICAtIC0tc2VydmljZS1hY2NvdW50LXByaXZhdGUta2V5LWZpbGU9L2V0Yy9rdWJlcm5ldGVzL3NzbC9rOHMtYXBpc2VydmVyLWtleS5wZW0KICAgIC0gLS1yb290LWNhLWZpbGU9L2V0Yy9rdWJlcm5ldGVzL3NzbC9jYS5wZW0KICAgIC0gLS1jb25maWd1cmUtY2xvdWQtcm91dGVzPWZhbHNlCiAgICAtIC0tYWxsb2NhdGUtbm9kZS1jaWRycz10cnVlCiAgICAtIC0tY2x1c3Rlci1jaWRyPTEwLjIuMC4wLzE2CiAgICAtIC0tdj0wCiAgICByZXNvdXJjZXM6CiAgICAgIHJlcXVlc3RzOgogICAgICAgIGNwdTogMjAwbQogICAgbGl2ZW5lc3NQcm9iZToKICAgICAgaHR0cEdldDoKICAgICAgICBob3N0OiAxMjcuMC4wLjEKICAgICAgICBwYXRoOiAvaGVhbHRoegogICAgICAgIHBvcnQ6IDEwMjUyCiAgICAgIGluaXRpYWxEZWxheVNlY29uZHM6IDE1CiAgICAgIHRpbWVvdXRTZWNvbmRzOiAxNQogICAgdm9sdW1lTW91bnRzOgogICAgLSBtb3VudFBhdGg6IC9ldGMva3ViZXJuZXRlcy9zc2wKICAgICAgbmFtZTogc3NsLWNlcnRzLWt1YmVybmV0ZXMKICAgICAgcmVhZE9ubHk6IHRydWUKICAgIC0gbW91bnRQYXRoOiAvZXRjL3NzbC9jZXJ0cwogICAgICBuYW1lOiBzc2wtY2VydHMtaG9zdAogICAgICByZWFkT25seTogdHJ1ZQogIGhvc3ROZXR3b3JrOiB0cnVlCiAgdm9sdW1lczoKICAtIGhvc3RQYXRoOgogICAgICBwYXRoOiAvZXRjL2t1YmVybmV0ZXMvc3NsCiAgICBuYW1lOiBzc2wtY2VydHMta3ViZXJuZXRlcwogIC0gaG9zdFBhdGg6CiAgICAgIHBhdGg6IC91c3Ivc2hhcmUvY2EtY2VydGlmaWNhdGVzCiAgICBuYW1lOiBzc2wtY2VydHMtaG9zdAo=",
           "verification": {}
         },
         "mode": 644,
@@ -71,7 +72,7 @@
         "filesystem": "root",
         "path": "/etc/kubernetes/manifests/kube-scheduler.yaml",
         "contents": {
-          "source": "data:,apiVersion%3A%20v1%0Akind%3A%20Pod%0Ametadata%3A%0A%20%20name%3A%20kube-scheduler%0A%20%20namespace%3A%20kube-system%0Aspec%3A%0A%20%20hostNetwork%3A%20true%0A%20%20containers%3A%0A%20%20-%20name%3A%20kube-scheduler%0A%20%20%20%20image%3A%20quay.io%2Fcoreos%2Fhyperkube%3Av1.6.2_coreos.0%0A%20%20%20%20command%3A%0A%20%20%20%20-%20%2Fhyperkube%0A%20%20%20%20-%20scheduler%0A%20%20%20%20-%20--master%3Dhttp%3A%2F%2F127.0.0.1%3A8080%0A%20%20%20%20-%20--leader-elect%3Dtrue%0A%20%20%20%20-%20--v%3D0%0A%20%20%20%20resources%3A%0A%20%20%20%20%20%20requests%3A%0A%20%20%20%20%20%20%20%20cpu%3A%20100m%0A%20%20%20%20livenessProbe%3A%0A%20%20%20%20%20%20httpGet%3A%0A%20%20%20%20%20%20%20%20host%3A%20127.0.0.1%0A%20%20%20%20%20%20%20%20path%3A%20%2Fhealthz%0A%20%20%20%20%20%20%20%20port%3A%2010251%0A%20%20%20%20%20%20initialDelaySeconds%3A%2015%0A%20%20%20%20%20%20timeoutSeconds%3A%2015%0A",
+          "source": "data:text/plain;charset=utf-8;base64,YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtc2NoZWR1bGVyCiAgbmFtZXNwYWNlOiBrdWJlLXN5c3RlbQpzcGVjOgogIGhvc3ROZXR3b3JrOiB0cnVlCiAgY29udGFpbmVyczoKICAtIG5hbWU6IGt1YmUtc2NoZWR1bGVyCiAgICBpbWFnZTogcXVheS5pby9jb3Jlb3MvaHlwZXJrdWJlOnYxLjYuMl9jb3Jlb3MuMAogICAgY29tbWFuZDoKICAgIC0gL2h5cGVya3ViZQogICAgLSBzY2hlZHVsZXIKICAgIC0gLS1tYXN0ZXI9aHR0cDovLzEyNy4wLjAuMTo4MDgwCiAgICAtIC0tbGVhZGVyLWVsZWN0PXRydWUKICAgIC0gLS12PTAKICAgIHJlc291cmNlczoKICAgICAgcmVxdWVzdHM6CiAgICAgICAgY3B1OiAxMDBtCiAgICBsaXZlbmVzc1Byb2JlOgogICAgICBodHRwR2V0OgogICAgICAgIGhvc3Q6IDEyNy4wLjAuMQogICAgICAgIHBhdGg6IC9oZWFsdGh6CiAgICAgICAgcG9ydDogMTAyNTEKICAgICAgaW5pdGlhbERlbGF5U2Vjb25kczogMTUKICAgICAgdGltZW91dFNlY29uZHM6IDE1Cg==",
           "verification": {}
         },
         "mode": 644,
@@ -80,9 +81,9 @@
       },
       {
         "filesystem": "root",
-        "path": "/opt/bin/install-kube-system",
+        "path": "/etc/kubernetes/manifests/kube-system.yaml",
         "contents": {
-          "source": "data:,%23!%2Fbin%2Fbash%20-e%0A%2Fusr%2Fbin%2Fcurl%20-H%20%22Content-Type%3A%20application%2Fjson%22%20-XPOST%20-d%20%40%22%2Fsrv%2Fkubernetes%2Fmanifests%2Fkube-system.json%22%20%22http%3A%2F%2F127.0.0.1%3A8080%2Fapi%2Fv1%2Fnamespaces%22%0A",
+          "source": "data:text/plain;charset=utf-8;base64,ewogICJhcGlWZXJzaW9uIjogInYxIiwKICAia2luZCI6ICJOYW1lc3BhY2UiLAogICJtZXRhZGF0YSI6IHsKICAgICJuYW1lIjogImt1YmUtc3lzdGVtIgogIH0KfQo=",
           "verification": {}
         },
         "mode": 644,
@@ -91,20 +92,9 @@
       },
       {
         "filesystem": "root",
-        "path": "/srv/kubernetes/manifests/kube-system.json",
+        "path": "/etc/kubernetes/manifests/network-policy.yaml",
         "contents": {
-          "source": "data:,%7B%0A%20%20%22apiVersion%22%3A%20%22v1%22%2C%0A%20%20%22kind%22%3A%20%22Namespace%22%2C%0A%20%20%22metadata%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22kube-system%22%0A%20%20%7D%0A%7D%0A",
-          "verification": {}
-        },
-        "mode": 644,
-        "user": {},
-        "group": {}
-      },
-      {
-        "filesystem": "root",
-        "path": "/srv/kubernetes/manifests/network-policy.json",
-        "contents": {
-          "source": "data:,%7B%0A%20%20%22kind%22%3A%20%22ThirdPartyResource%22%2C%0A%20%20%22apiVersion%22%3A%20%22extensions%2Fv1beta1%22%2C%0A%20%20%22metadata%22%3A%20%7B%0A%20%20%20%20%22name%22%3A%20%22network-policy.net.alpha.kubernetes.io%22%0A%20%20%7D%2C%0A%20%20%22description%22%3A%20%22Specification%20for%20a%20network%20isolation%20policy%22%2C%0A%20%20%22versions%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22name%22%3A%20%22v1alpha1%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D%0A",
+          "source": "data:text/plain;charset=utf-8;base64,ewogICJraW5kIjogIlRoaXJkUGFydHlSZXNvdXJjZSIsCiAgImFwaVZlcnNpb24iOiAiZXh0ZW5zaW9ucy92MWJldGExIiwKICAibWV0YWRhdGEiOiB7CiAgICAibmFtZSI6ICJuZXR3b3JrLXBvbGljeS5uZXQuYWxwaGEua3ViZXJuZXRlcy5pbyIKICB9LAogICJkZXNjcmlwdGlvbiI6ICJTcGVjaWZpY2F0aW9uIGZvciBhIG5ldHdvcmsgaXNvbGF0aW9uIHBvbGljeSIsCiAgInZlcnNpb25zIjogWwogICAgewogICAgICAibmFtZSI6ICJ2MWFscGhhMSIKICAgIH0KICBdCn0K",
           "verification": {}
         },
         "mode": 644,
@@ -115,7 +105,18 @@
         "filesystem": "root",
         "path": "/etc/kubernetes/kubeconfig",
         "contents": {
-          "source": "data:,kind%3A%20Config%0Aclusters%3A%0A-%20name%3A%20local%0A%20%20cluster%3A%0A%20%20%20%20certificate-authority%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fca.pem%0A%20%20%20%20server%3A%20http%3A%2F%2F127.0.0.1%3A8080%0Ausers%3A%0A-%20name%3A%20kubelet%0A%20%20user%3A%0A%20%20%20%20client-certificate%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver.pem%0A%20%20%20%20client-key%3A%20%2Fetc%2Fkubernetes%2Fssl%2Fk8s-apiserver-key.pem%0Acontexts%3A%0A-%20context%3A%0A%20%20%20%20cluster%3A%20local%0A%20%20%20%20user%3A%20kubelet%0A%20%20name%3A%20kubelet-cluster.local%0Acurrent-context%3A%20kubelet-cluster.local%0A",
+          "source": "data:text/plain;charset=utf-8;base64,a2luZDogQ29uZmlnCmNsdXN0ZXJzOgotIG5hbWU6IGxvY2FsCiAgY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eTogL2V0Yy9rdWJlcm5ldGVzL3NzbC9jYS5wZW0KICAgIHNlcnZlcjogaHR0cDovLzEyNy4wLjAuMTo4MDgwCnVzZXJzOgotIG5hbWU6IGt1YmVsZXQKICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlOiAvZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy1hcGlzZXJ2ZXIucGVtCiAgICBjbGllbnQta2V5OiAvZXRjL2t1YmVybmV0ZXMvc3NsL2s4cy1hcGlzZXJ2ZXIta2V5LnBlbQpjb250ZXh0czoKLSBjb250ZXh0OgogICAgY2x1c3RlcjogbG9jYWwKICAgIHVzZXI6IGt1YmVsZXQKICBuYW1lOiBrdWJlbGV0LWNsdXN0ZXIubG9jYWwKY3VycmVudC1jb250ZXh0OiBrdWJlbGV0LWNsdXN0ZXIubG9jYWwK",
+          "verification": {}
+        },
+        "mode": 644,
+        "user": {},
+        "group": {}
+      },
+      {
+        "filesystem": "root",
+        "path": "/opt/bin/install-kube-system",
+        "contents": {
+          "source": "data:text/plain;charset=utf-8;base64,IyEvYmluL2Jhc2ggLWUKL3Vzci9iaW4vY3VybCAtSCAiQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uIiAtWFBPU1QgLWQgQCIvc3J2L2t1YmVybmV0ZXMvbWFuaWZlc3RzL2t1YmUtc3lzdGVtLmpzb24iICJodHRwOi8vMTI3LjAuMC4xOjgwODAvYXBpL3YxL25hbWVzcGFjZXMiCg==",
           "verification": {}
         },
         "mode": 644,
@@ -126,7 +127,7 @@
         "filesystem": "root",
         "path": "/etc/prom-text-collectors/machine_role.prom",
         "contents": {
-          "source": "data:,machine_role%7Brole%3D%22master%22%7D%201%0A",
+          "source": "data:text/plain;charset=utf-8;base64,bWFjaGluZV9yb2xle3JvbGU9Im1hc3RlciJ9IDE=",
           "verification": {}
         },
         "mode": 644,
@@ -137,7 +138,7 @@
         "filesystem": "root",
         "path": "/etc/hostname",
         "contents": {
-          "source": "data:,master0-borg.prod.uw.systems%0A",
+          "source": "data:text/plain;charset=utf-8;base64,bWFzdGVyMC1ib3JnLnByb2QudXcuc3lzdGVtcw==",
           "verification": {}
         },
         "mode": 420,
@@ -153,22 +154,16 @@
         "enable": true,
         "dropins": [
           {
-            "name": "20-clct-etcd-member.conf",
-            "contents": "[Service]\nEnvironment=\"ETCD_IMAGE_TAG=v3.1.6\"\nExecStart=\nExecStart=/usr/lib/coreos/etcd-wrapper $ETCD_OPTS \\\n  --name=\"member0\" \\\n  --listen-peer-urls=\"https://192.168.1.100:2380\" \\\n  --listen-client-urls=\"https://0.0.0.0:2379\" \\\n  --initial-advertise-peer-urls=\"https://192.168.1.100:2380\" \\\n  --initial-cluster=\"member0=https://192.168.1.100:2380\" \\\n  --advertise-client-urls=\"https://192.168.1.100:2379\" \\\n  --cert-file=\"/etc/etcd/ssl/k8s-etcd.pem\" \\\n  --key-file=\"/etc/etcd/ssl/k8s-etcd-key.pem\" \\\n  --client-cert-auth=true \\\n  --trusted-ca-file=\"/etc/etcd/ssl/ca.pem\" \\\n  --peer-cert-file=\"/etc/etcd/ssl/k8s-etcd.pem\" \\\n  --peer-key-file=\"/etc/etcd/ssl/k8s-etcd-key.pem\" \\\n  --peer-client-cert-auth=true \\\n  --peer-trusted-ca-file=\"/etc/etcd/ssl/ca.pem\""
-          }
-        ]
-      },
-      {
-        "name": "etcd-member.service",
-        "enable": true,
-        "dropins": [
-          {
             "name": "10-wait-etcd.conf",
             "contents": "[Unit]\nAfter=get-ssl.service\nRequires=get-ssl.service\n"
           },
           {
             "name": "15-custom-options.conf",
             "contents": "[Service]\nExecStartPre=/usr/bin/mkdir -p /etc/etcd\nEnvironment=\"RKT_RUN_ARGS=\\\n  --uuid-file-save=/var/lib/coreos/etcd-member-wrapper.uuid \\\n  --volume etc-etcd,kind=host,source=/etc/etcd,readOnly=true \\\n  --mount volume=etc-etcd,target=/etc/etcd\"\n"
+          },
+          {
+            "name": "20-config.conf",
+            "contents": "[Service]\nEnvironment=\"ETCD_IMAGE_URL=quay.io/coreos/etcd\"\nEnvironment=\"ETCD_IMAGE_TAG=v3.1.6\"\nEnvironment=\"ETCD_NAME=member0\"\nEnvironment=\"ETCD_INITIAL_CLUSTER=member0=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_LISTEN_PEER_URLS=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_LISTEN_CLIENT_URLS=https://0.0.0.0:2379\"\nEnvironment=\"ETCD_ADVERTISE_CLIENT_URLS=https://192.168.1.100:2379\"\nEnvironment=\"ETCD_INITIAL_ADVERTISE_PEER_URLS=https://192.168.1.100:2380\"\nEnvironment=\"ETCD_CLIENT_CERT_AUTH=true\"\nEnvironment=\"ETCD_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem\"\nEnvironment=\"ETCD_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem\"\nEnvironment=\"ETCD_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem\"\nEnvironment=\"ETCD_PEER_CLIENT_CERT_AUTH=true\"\nEnvironment=\"ETCD_PEER_TRUSTED_CA_FILE=/etc/etcd/ssl/ca.pem\"\nEnvironment=\"ETCD_PEER_CERT_FILE=/etc/etcd/ssl/k8s-etcd.pem\"\nEnvironment=\"ETCD_PEER_KEY_FILE=/etc/etcd/ssl/k8s-etcd-key.pem\"\n"
           }
         ]
       },
@@ -180,7 +175,7 @@
       {
         "name": "install-kube-system.service",
         "enable": true,
-        "contents": "[Unit]\nRequires=kubelet.service docker.service\nAfter=kubelet.service docker.service\n[Service]\nType=simple\nStartLimitInterval=0\nRestart=on-failure\nRestartSec=10\nExecStartPre=/usr/bin/curl http://127.0.0.1:8080/version\nExecStart=/opt/bin/install-kube-system\n"
+        "contents": "#!/bin/bash -e\n/usr/bin/curl -H \"Content-Type: application/json\" -XPOST -d @\"/srv/kubernetes/manifests/kube-system.json\" \"http://127.0.0.1:8080/api/v1/namespaces\"\n"
       },
       {
         "name": "get-ssl.service",
