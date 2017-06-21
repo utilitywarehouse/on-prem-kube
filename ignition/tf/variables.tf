@@ -19,7 +19,11 @@ variable "etcd_image_tag" {
 }
 
 variable "dell_workers" {
-  default = 4
+  default = 2
+}
+
+variable "storage_workers" {
+  default = 2
 }
 
 variable "atx_workers" {

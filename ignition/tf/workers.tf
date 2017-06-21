@@ -21,6 +21,29 @@ data "ignition_config" "dell-worker" {
   ]
 }
 
+data "ignition_config" "storage-worker" {
+  count = "${var.storage_workers}"
+  disks = [
+    "${data.ignition_disk.devsda.id}",
+  ]
+
+  filesystems = [
+    "${data.ignition_filesystem.root.id}",
+  ]
+
+  files = [
+    "${data.ignition_file.kube-proxy-worker.id}",
+    "${data.ignition_file.worker-kubeconfig.id}",
+    "${data.ignition_file.worker-machine-role.id}",
+    "${element(data.ignition_file.dell-hostname.*.id, count.index)}",
+  ]
+
+  systemd = [
+    "${data.ignition_systemd_unit.kubelet-storage-worker.id}",
+    "${data.ignition_systemd_unit.get-ssl-worker.id}",
+  ]
+}
+
 data "ignition_config" "atx-worker" {
   count = "${var.atx_workers}"
   disks = [
@@ -107,7 +130,7 @@ data "ignition_file" "worker-machine-role" {
   path       = "/etc/prom-text-collectors/machine_role.prom"
 
   content {
-    content = "machine_role{role=\"worker\"} 1"
+    content = "machine_role{role=\"worker\"} 1\n"
   }
 }
 
@@ -141,12 +164,30 @@ data "template_file" "kubelet-worker" {
   vars {
     kubelet_image_url = "${var.kubelet_image_url}"
     kubelet_image_tag = "${var.kubelet_image_tag}"
+    taints = ""
+    role = "worker"
   }
 }
 
 data "ignition_systemd_unit" "kubelet-worker" {
   name    = "kubelet.service"
   content = "${data.template_file.kubelet-worker.rendered}"
+}
+
+data "template_file" "kubelet-storage-worker" {
+  template = "${file("resources/services/worker/kubelet.service")}"
+
+  vars {
+    kubelet_image_url = "${var.kubelet_image_url}"
+    kubelet_image_tag = "${var.kubelet_image_tag}"
+    taints = "storage-node=true:NoSchedule"
+    role = "storage-worker"
+  }
+}
+
+data "ignition_systemd_unit" "kubelet-storage-worker" {
+  name    = "kubelet.service"
+  content = "${data.template_file.kubelet-storage-worker.rendered}"
 }
 
 data "template_file" "get-ssl-worker" {

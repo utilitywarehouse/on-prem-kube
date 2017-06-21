@@ -171,7 +171,7 @@ data "ignition_file" "master-machine-role" {
   path       = "/etc/prom-text-collectors/machine_role.prom"
 
   content {
-    content = "machine_role{role=\"master\"} 1"
+    content = "machine_role{role=\"master\"} 1\n"
   }
 }
 

@@ -25,8 +25,9 @@ ExecStartPre=-/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid
 ExecStart=/usr/lib/coreos/kubelet-wrapper \
   --require-kubeconfig=true \
   --kubeconfig=/etc/kubernetes/kubeconfig \
-  --node-labels=role=worker \
   --container-runtime=docker \
+  --node-labels=role=${role} \
+  ${ taints == "" ? "" : "--register-with-taints=${taints}" } \
   --network-plugin-dir=/etc/cni/net.d \
   --network-plugin=cni \
   --cni-bin-dir=/opt/cni/bin \

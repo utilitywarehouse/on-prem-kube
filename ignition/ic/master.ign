@@ -127,7 +127,7 @@
         "filesystem": "root",
         "path": "/etc/prom-text-collectors/machine_role.prom",
         "contents": {
-          "source": "data:text/plain;charset=utf-8;base64,bWFjaGluZV9yb2xle3JvbGU9Im1hc3RlciJ9IDE=",
+          "source": "data:text/plain;charset=utf-8;base64,bWFjaGluZV9yb2xle3JvbGU9Im1hc3RlciJ9IDEK",
           "verification": {}
         },
         "mode": 644,
