@@ -35,7 +35,7 @@ data "ignition_config" "storage-worker" {
     "${data.ignition_file.kube-proxy-worker.id}",
     "${data.ignition_file.worker-kubeconfig.id}",
     "${data.ignition_file.worker-machine-role.id}",
-    "${element(data.ignition_file.dell-hostname.*.id, count.index)}",
+    "${element(data.ignition_file.storage-hostname.*.id, count.index)}",
   ]
 
   systemd = [
@@ -143,6 +143,18 @@ data "ignition_file" "dell-hostname" {
 
   content {
     content = "worker${count.index}-borg.prod.uw.systems"
+  }
+}
+
+data "ignition_file" "storage-hostname" {
+  count = "${var.storage_workers}"
+
+  filesystem = "root"
+  mode       = 420
+  path       = "/etc/hostname"
+
+  content {
+    content = "storage-worker${count.index}-borg.prod.uw.systems"
   }
 }
 

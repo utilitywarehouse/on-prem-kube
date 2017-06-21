@@ -72,7 +72,7 @@
         "filesystem": "root",
         "path": "/etc/hostname",
         "contents": {
-          "source": "data:text/plain;charset=utf-8;base64,d29ya2VyMS1ib3JnLnByb2QudXcuc3lzdGVtcw==",
+          "source": "data:text/plain;charset=utf-8;base64,c3RvcmFnZS13b3JrZXIxLWJvcmcucHJvZC51dy5zeXN0ZW1z",
           "verification": {}
         },
         "mode": 420,
