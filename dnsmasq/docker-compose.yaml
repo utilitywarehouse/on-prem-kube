@@ -5,14 +5,32 @@ services:
     cap_add:
     - NET_ADMIN
     network_mode: "host"
-#  vault:
-#    image: vault:0.7.3
-#    cap_add:
-#    - IPC_LOCK
-#    environment:
-#      VAULT_DEV_ROOT_TOKEN_ID: myroot
-#      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:1234
-#      VAULT_LOCAL_CONFIG: '{"backend": {"file": {"path": "/vault/config"}}, "default_lease_ttl": "168h", "max_lease_ttl": "720h"}'
-#    ports:
-#    - "1234:1234"
-#    command: vault server
+  etcd:
+    image: quay.io/coreos/etcd:v3.1.9
+    ports:
+    - "2379:2379"
+    - "2380:2380"
+    volumes:
+    - etcd-data:/etcd-data
+    environment:
+    - ETCD_NAME=member0
+    - ETCD_INITIAL_CLUSTER=member0=http://etcd:2380
+    - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+    - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+    - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://etcd:2380
+    command: /usr/local/bin/etcd --data-dir=/etcd-data
+  vault:
+    image: vault:0.7.3
+    cap_add:
+    - IPC_LOCK
+    volumes:
+    - ./vault:/vault
+    ports:
+    - "8200:8200"
+    # Super ugly hack, as docker-compose no longer supports checks
+    command: sh -c "until nc -z -v -w1 etcd 2379; do sleep 2; done && vault server -config=/vault/config"
+    depends_on:
+    - etcd
+volumes:
+  etcd-data:
