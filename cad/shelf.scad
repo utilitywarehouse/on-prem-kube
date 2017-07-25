@@ -23,7 +23,6 @@ body_dep=dep;
 body_hei=hei-body_platform;
 
 // vents
-// 55 x 14
 vent_wid=55;
 vent_hei=14;
 
@@ -64,10 +63,8 @@ difference() {
         [lip_wid_back/2, -lip_dep/2],
       ]);
 
-  // bottom screw hole
+  // screw holes
   screw_hole(sd=0);
-
-  // top screw hole
   screw_hole(sd=sep_dist);
 
   // body
