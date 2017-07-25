@@ -30,7 +30,7 @@ vent_hei=14;
 module screw_hole(sd) {
   translate([-wid/2+lip_wid_back/2,dep/2-lip_dep_pos/2,bot_pos+dia/2+sd])
     rotate([90,,])
-      cylinder(screw_hei,d=dia,center=true);
+      cylinder($fn = 24, h=screw_hei,d=dia,center=true);
 }
 
 module vent(x,y) {
