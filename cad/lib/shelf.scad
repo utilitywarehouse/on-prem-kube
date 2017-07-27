@@ -132,12 +132,17 @@ module shelf_block() {
           ]);
   
     // vents
-    vent(4,4);
+    vent(4,6);
+    vent(4,3);
     vent(4,body_dep);
-    vent(4,-4);
-    vent(-4,4);
+    vent(4,-3);
+    vent(4,-6);
+
+    vent(-4,6);
+    vent(-4,3);
     vent(-4,body_dep);
-    vent(-4,-4);
+    vent(-4,-3);
+    vent(-4,-6);
   }
 }
 
