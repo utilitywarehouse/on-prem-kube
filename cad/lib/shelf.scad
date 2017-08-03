@@ -1,17 +1,10 @@
 // Print Area: 280 mm x 280 mm x 250 mm (11.02 in x 11.02 in x 9.8 in)
 // 
-// width: 24.4
-// length: 33.3
-// height: 15.0
-// 
-// psu
-// width: 8.5
-// 
 // screw to screw: 463
 // sts horiz: 30
 
-rack_wid = 231;
-dep=260;
+rack_wid = 225;
+dep=270;
 hei=45;
 
 // mount lip
@@ -19,7 +12,6 @@ lip_wid_back=18;
 lip_dep_pos=6;
 lip_dep=dep-lip_dep_pos;
 lip_guard=6.5;
-lip_decline_dep=25;
 
 // screw holes
 dia=6;
@@ -28,13 +20,12 @@ sep_dist=30;
 screw_hei=lip_dep_pos+0.1; // figure out why we need this 0.1
 
 // shelf body
-wid = rack_wid + lip_wid_back/2;
+wid = rack_wid + lip_wid_back;
 
 // body
 body_platform=6.5;
 body_wid=wid-lip_wid_back-lip_guard;
 body_dep=dep;
-body_hei=hei-body_platform;
 
 // vents
 vent_wid=55;
@@ -44,6 +35,8 @@ vent_hei=14;
 latch_hei = 10;
 latch_dia = 3;
 latch_outter_dia = latch_dia + 3;
+
+padding = 1;
 
 module block(x,y) {
   polygon([
@@ -65,7 +58,7 @@ module screw_hole(sd) {
 
 module vent(x,y) {
   translate([-body_wid/x,body_dep/y,0])
-    linear_extrude(body_platform)
+    linear_extrude()
       block(vent_wid, vent_hei);
 }
 
@@ -101,6 +94,11 @@ module indent(ty, convex) {
         block(w,l);
 }
 
+module indents(concave) {
+      indent(body_dep/8, concave);
+      indent(-body_dep/8, concave);
+}
+
 module shelf_block() {
   difference() {
     // whole shelf
@@ -108,9 +106,21 @@ module shelf_block() {
       block(wid,dep);
     
     // lip
-    linear_extrude(hei)
-      translate([-wid/2+lip_wid_back/2,-lip_dep_pos/2,0])
-        block(lip_wid_back, lip_dep);
+    linear_extrude()
+      translate([-wid/2+lip_wid_back/2,-lip_dep_pos/2,],0)
+        block(lip_wid_back+padding, lip_dep+padding);
+  
+    // arm gradient
+    translate([-wid/2,lip_dep/2-lip_dep_pos/2,hei])
+      rotate([180,-90,0])
+        linear_extrude()
+          polygon([
+            [0, 0],
+            [padding, 0],
+            [padding, lip_dep + padding],
+            [0, lip_dep + padding],
+            [-hei+body_platform, lip_dep],
+          ]);
   
     // screw holes
     screw_hole(sd=0);
@@ -118,36 +128,20 @@ module shelf_block() {
   
     // body
     translate([(lip_wid_back+lip_guard)/2,dep/2-body_dep/2,body_platform])
-      linear_extrude(body_hei)
-        block(body_wid, body_dep);
-  
-    // arm gradient
-    translate([-wid/2+lip_guard+lip_wid_back+0.1,-dep/2,hei])
-      rotate([-90,0,90])
-        linear_extrude(lip_guard+0.2)
-          polygon([
-            [0,0],
-            [body_dep - lip_decline_dep,0],
-            [0, hei - body_platform],
-          ]);
+      linear_extrude()
+        block(body_wid+padding, body_dep+100);
   
     // vents
     vent(4,6);
     vent(4,3);
-    vent(4,body_dep);
+    //vent(4,body_dep);
     vent(4,-3);
     vent(4,-6);
 
     vent(-4,6);
     vent(-4,3);
-    vent(-4,body_dep);
+    //vent(-4,body_dep);
     vent(-4,-3);
     vent(-4,-6);
   }
 }
-
-module indents(concave) {
-      indent(body_dep/8, concave);
-      indent(-body_dep/8, concave);
-}
-
