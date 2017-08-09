@@ -1,10 +1,3 @@
-// width: 24.4
-// length: 33.3
-// height: 15.0
-// 
-// psu
-// width: 8.5
-
 thickness = 5;
 heigth = 20;
 length = 28;
@@ -47,22 +40,25 @@ module mount() {
   }
 }
 
-module left_mobo_mount() {
-  wid = 16;
-  dep = 10;
+module mobo_mount(dep) {
+  wid = 17;
   union() {
     mount();
     translate([wid,dep,thickness])
       cylinder($fn = 32, h=10,d=3,center=true);
+    translate([wid,dep,thickness/2])
+      cylinder($fn = 32, h=5, d=9, d2=6, center=true);
+    translate([wid,dep,-thickness/2])
+      cylinder($fn = 32, h=5, d=9, center=true);
   }
 }
 
+module left_mobo_mount() {
+  dep = 11;
+  mobo_mount(dep);
+}
+
 module right_mobo_mount() {
-  wid = 16;
-  dep = 6;
-  union() {
-    mount();
-    translate([wid,dep,thickness])
-      cylinder($fn = 32, h=10,d=3,center=true);
-  }
+  dep = 7;
+  mobo_mount(dep);
 }
