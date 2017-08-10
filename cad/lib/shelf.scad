@@ -62,43 +62,6 @@ module vent(x,y) {
       block(vent_wid, vent_hei);
 }
 
-module latch(ty) {
-  tx = wid/2;
-  tz = body_platform + latch_dia/2;
-  difference() {
-    translate([tx,ty,tz])
-      rotate([90,,])
-        cylinder($fn = 64, h=latch_hei,d=latch_outter_dia,center=true);
-
-    translate([tx,ty,tz])
-      rotate([90,,])
-        cylinder($fn = 64, h=latch_hei+0.1,d=latch_dia,center=true);
-  }
-}
-
-module latches(os) {
-  latch(0+os);
-  latch(body_dep/4+os);
-  latch(-body_dep/4+os);
-}
-
-module indent(ty, convex) {
-  l = 10;
-  w = 3;
-  d = 3;
-  tx = wid/2-d*convex;
-  tz = body_platform/2;
-  translate([tx,ty,tz])
-    rotate([0,90,0])
-      linear_extrude(d)
-        block(w,l);
-}
-
-module indents(concave) {
-      indent(body_dep/8, concave);
-      indent(-body_dep/8, concave);
-}
-
 module shelf_block() {
   difference() {
     // whole shelf

@@ -35,7 +35,6 @@ module right_shelf() {
         rotate([0,0,0])
           mount();
     }
-    indents(1);
   }
 }
 
@@ -44,7 +43,6 @@ module left_shelf() {
     difference() {
       union() {
         shelf_block();
-        indents(0);
         translate([mobo_edge_trans, dep/2-10, body_platform+mount_platform_height])
           rotate([0,0,-90])
             left_mobo_mount();
