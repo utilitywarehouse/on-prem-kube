@@ -1,5 +1,4 @@
 include <lib/shelf.scad>
-include <lib/bolts.scad>
 include <lib/mounts.scad>
 
 latch_hei = 10;
@@ -56,14 +55,6 @@ module left_shelf() {
       }
     }
 }
-
-// bolts
-//translate([wid/2+shelves_sep_dist/2,dep/4,20])
-//  bolt();
-//translate([wid/2+shelves_sep_dist/2,0,20])
-//  bolt();
-//translate([wid/2+shelves_sep_dist/2,-dep/4,20])
-//  bolt();
 
 right_shelf();
 left_shelf();
